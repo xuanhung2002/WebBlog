@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DependencyInjection\Extensions\" />
     <Folder Include="ExternalServices\" />
     <Folder Include="Persistance\DataSeeding\" />
   </ItemGroup>
