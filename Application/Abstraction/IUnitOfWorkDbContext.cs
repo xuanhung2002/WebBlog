@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebBlog.Application.Abstraction
 {
-    public interface IUnitOfWorkDbContext<TContext> : IDisposable
+    public interface IUnitOfWorkDbContext<TContext> : IAsyncDisposable
         where TContext : class // implement must be DbContext
     {
         Task SaveChangeAsync(CancellationToken cancellationToken = default);

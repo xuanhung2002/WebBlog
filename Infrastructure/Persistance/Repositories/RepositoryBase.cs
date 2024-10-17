@@ -13,8 +13,8 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
 {
     public class RepositoryBase<T, TKey> : IRepositoryBase<T, TKey> where T : EntityAuditBase<TKey>
     {
-        private readonly DataContext _context;
-        public RepositoryBase(DataContext context)
+        private readonly ApplicationDbContext _context;
+        public RepositoryBase(ApplicationDbContext context)
         {
             _context = context;
         }
