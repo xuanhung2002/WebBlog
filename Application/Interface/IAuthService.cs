@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebBlog.Domain.Abstraction.Entities
+namespace WebBlog.Application.Interface
 {
-    public interface IEntityAuditBase : IEntityBase, IAuditable
+    public interface IAuthService
     {
+        public Task<>
     }
 }

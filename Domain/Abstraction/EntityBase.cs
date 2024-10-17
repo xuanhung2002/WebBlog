@@ -7,8 +7,8 @@ using WebBlog.Domain.Abstraction.Entities;
 
 namespace WebBlog.Domain.Abstraction
 {
-    public abstract class EntityBase<TKey> : IEntityBase<TKey>
+    public abstract class EntityBase : IEntityBase
     {
-        public TKey Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

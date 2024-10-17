@@ -7,7 +7,7 @@ using WebBlog.Domain.Abstraction;
 
 namespace WebBlog.Domain.Entities
 {
-    public class Product : EntityAuditBase<Guid>
+    public class Product : EntityAuditBase
     {
         public string Name { get; set; }
         public decimal Price { get; set; }

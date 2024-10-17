@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebBlog.Domain.Abstraction.Entities
 {
-    public interface IEntityBase<TKey>
+    public interface IEntityBase
     {
-        TKey Id { get; }
+        Guid Id { get; }
     }
 }

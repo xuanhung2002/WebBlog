@@ -7,7 +7,7 @@ using WebBlog.Domain.Abstraction.Entities;
 
 namespace WebBlog.Domain.Abstraction
 {
-    public abstract class EntityAuditBase<TKey> : EntityBase<TKey>, IEntityAuditBase<TKey>
+    public abstract class EntityAuditBase : EntityBase, IEntityAuditBase
     {
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? ModifiedDate { get; set; }
