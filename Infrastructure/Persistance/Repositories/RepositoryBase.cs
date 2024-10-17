@@ -11,7 +11,7 @@ using WebBlog.Domain.Abstraction;
 
 namespace WebBlog.Infrastructure.Persistance.Repositories
 {
-    public class RepositoryBase<T, TKey> : IRepositoryBase<T, TKey> where T : EntityAuditBase<TKey>
+    public class RepositoryBase<T> : IRepositoryBase<T> where T : EntityAuditBase
     {
         private readonly ApplicationDbContext _context;
         public RepositoryBase(ApplicationDbContext context)
@@ -44,7 +44,7 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
             return items.Where(predicate);
         }
 
-        public async Task<T?> FindByIdAsync(TKey id, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includeProperties)
+        public async Task<T?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includeProperties)
         {
             return await FindAll(includeProperties).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
         }
@@ -66,7 +66,7 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
         {
            _context.Set<T>().Update(entity);  
         }
-        public async Task RemoveAsync(TKey id, CancellationToken cancellation = default)
+        public async Task RemoveAsync(Guid id, CancellationToken cancellation = default)
         {
             var entity = await FindByIdAsync(id, cancellation);
             Remove(entity);

@@ -8,7 +8,7 @@ using WebBlog.Domain.Abstraction.Entities;
 
 namespace WebBlog.Infrastructure.Identity
 {
-    public class Function : EntityBase<int>, IDateTracking
+    public class Function : EntityBase, IDateTracking
     {
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? ModifiedDate { get; set; }

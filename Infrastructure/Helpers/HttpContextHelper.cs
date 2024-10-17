@@ -16,7 +16,7 @@ namespace WebBlog.Infrastructure.Helpers
     public static class HttpContextHelper
     {
         public static IConfiguration Configuration { get; set; }
-        private static string GenerateToken(AppUser user, IConfiguration configuration)
+        public static string GenerateToken(AppUser user, IConfiguration configuration)
         {
             var tokenKey = configuration["Tokens:Key"];
             var issuer = configuration["Tokens:Issuer"];
