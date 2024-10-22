@@ -28,6 +28,10 @@ namespace WebBlog.API.Middlewares
                     case UnauthorizeException:
                         response.StatusCode = StatusCodes.Status401Unauthorized;
                         break;
+                    case BadRequestException:
+                        response.StatusCode = StatusCodes.Status400BadRequest;
+                        break;
+
                 }
             var result = JsonSerializer.Serialize(new { message = error?.Message });
             await response.WriteAsync(result);

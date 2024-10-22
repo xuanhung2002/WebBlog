@@ -7,14 +7,13 @@ namespace WebBlog.Infrastructure.Identity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
         public DateTime? DayOfBirth { get; set; }
         public virtual ICollection<IdentityUserClaim<Guid>> Claims { get; set; }
-        public virtual ICollection<IdentityUserRole<Guid>> Roles { get; set; }
         public virtual ICollection<IdentityUserToken<Guid>> Tokens { get; set; }
         public virtual ICollection<IdentityUserLogin<Guid>> Logins { get; set; }
 
-        public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset? ModifiedDate { get; set; }
         public Guid CreatedBy { get; set; }
         public Guid? ModifiedBy { get; set; }

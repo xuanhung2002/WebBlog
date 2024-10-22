@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using WebBlog.Application.Abstraction;
 
-namespace WebBlog.Infrastructure
+namespace WebBlog.Infrastructure.UoWSingleContext
 {
-    public class EFUnitOfWorkDbContext<TContext> : IUnitOfWorkDbContext<TContext>
-        where TContext : DbContext
+    public class EFUnitOfWork : IUnitOfWork
     {
-        private readonly TContext _context;
-        public EFUnitOfWorkDbContext(TContext context)
+        private readonly ApplicationDbContext _context;
+
+        public EFUnitOfWork(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -21,7 +21,7 @@ namespace WebBlog.Infrastructure
             await _context.DisposeAsync();
         }
 
-        public TContext GetDbContext()
+        public object GetDbContext()
         {
             return _context;
         }

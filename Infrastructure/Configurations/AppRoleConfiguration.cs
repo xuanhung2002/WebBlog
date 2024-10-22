@@ -19,17 +19,6 @@ namespace WebBlog.Infrastructure.Configurations
             builder.Property(x => x.Description).HasMaxLength(250).IsRequired(true);
             builder.Property(x => x.RoleCode).HasMaxLength(50).IsRequired(true);
 
-            // each User can have many RoleClaims
-            builder.HasMany(e => e.Claims)
-                .WithOne()
-                .HasForeignKey(uc => uc.UserId)
-                .IsRequired();
-
-            // each User can have many entries in the UserRole join table
-            builder.HasMany(e => e.Roles)
-                .WithOne()
-                .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
         }
     }
 }

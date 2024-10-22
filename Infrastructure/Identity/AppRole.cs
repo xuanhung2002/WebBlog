@@ -12,9 +12,6 @@ namespace WebBlog.Infrastructure.Identity
     {
         public string Description { get; set; }
         public string RoleCode { get; set; }
-        public virtual ICollection<IdentityUserClaim<Guid>> Claims { get; set; }
-        public virtual ICollection<IdentityUserRole<Guid>> Roles { get; set; }
-
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? ModifiedDate { get; set; }
         public Guid CreatedBy { get; set; }

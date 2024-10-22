@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using WebBlog.Application.Dtos.ApiRequestDtos;
 using WebBlog.Application.Exceptions;
 using WebBlog.Application.ExternalServices;
+using WebBlog.Domain;
 using WebBlog.Infrastructure.Helpers;
 using WebBlog.Infrastructure.Identity;
 using static WebBlog.Application.Dtos.ApiRequestDtos.AuthDtos;
@@ -22,7 +24,7 @@ namespace WebBlog.Application.Services
         public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration)
         {
             _signInManager = signInManager;
-            _userManager = userManager; 
+            _userManager = userManager;
             _configuration = configuration;
         }
         public async Task<string> LoginAsync(LoginDto dto)
@@ -35,17 +37,33 @@ namespace WebBlog.Application.Services
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
             if (result.Succeeded)
             {
-               return HttpContextHelper.GenerateToken(user, _configuration);
+                return HttpContextHelper.GenerateToken(user,_userManager, _configuration);
             }
             else
             {
-                throw new UnauthorizeException("Password is incorrect"); ;
+                throw new UnauthorizeException("Password is incorrect");
             }
         }
 
-        public Task<string> RegisterAsync(CreateUserRequest dto)
+        public async Task<string> RegisterAsync(CreateUserRequest dto)
         {
-            throw new NotImplementedException();
+            var user = new AppUser
+            {
+                UserName = dto.UserName,
+                Email = dto.Email,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+            };
+            var result = await _userManager.CreateAsync(user, dto.Password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, RoleNames.User);
+                return HttpContextHelper.GenerateToken(user, _userManager, _configuration);
+            }
+            else
+            {
+                throw new BadRequestException(result.Errors.FirstOrDefault().Description.ToString());               
+            }
         }
     }
 }

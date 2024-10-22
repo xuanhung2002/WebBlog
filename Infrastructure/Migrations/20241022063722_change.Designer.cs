@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebBlog.Infrastructure;
 
@@ -11,9 +12,11 @@ using WebBlog.Infrastructure;
 namespace WebBlog.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241022063722_change")]
+    partial class change
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,6 +104,8 @@ namespace WebBlog.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("RoleId", "UserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("AppUserRoles", (string)null);
                 });
@@ -261,6 +266,12 @@ namespace WebBlog.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
+                    b.HasOne("WebBlog.Infrastructure.Identity.AppRole", null)
+                        .WithMany("Claims")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WebBlog.Infrastructure.Identity.AppUser", null)
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
@@ -277,6 +288,21 @@ namespace WebBlog.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("WebBlog.Infrastructure.Identity.AppRole", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebBlog.Infrastructure.Identity.AppUser", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.HasOne("WebBlog.Infrastructure.Identity.AppUser", null)
@@ -286,11 +312,20 @@ namespace WebBlog.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WebBlog.Infrastructure.Identity.AppRole", b =>
+                {
+                    b.Navigation("Claims");
+
+                    b.Navigation("Roles");
+                });
+
             modelBuilder.Entity("WebBlog.Infrastructure.Identity.AppUser", b =>
                 {
                     b.Navigation("Claims");
 
                     b.Navigation("Logins");
+
+                    b.Navigation("Roles");
 
                     b.Navigation("Tokens");
                 });

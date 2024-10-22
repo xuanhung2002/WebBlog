@@ -29,12 +29,6 @@ namespace WebBlog.Infrastructure.Configurations
                 .WithOne()
                 .HasForeignKey(ut => ut.UserId)
                 .IsRequired();
-
-            // each User can have many entries in the UserRole join table
-            builder.HasMany(e => e.Roles)
-                .WithOne()
-                .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
         }
     }
 }
