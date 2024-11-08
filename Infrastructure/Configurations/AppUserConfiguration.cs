@@ -29,6 +29,11 @@ namespace WebBlog.Infrastructure.Configurations
                 .WithOne()
                 .HasForeignKey(ut => ut.UserId)
                 .IsRequired();
+            
+            builder.HasMany(e => e.RefreshTokens)
+                .WithOne()
+                .HasForeignKey(t => t.AppUserId)
+                .IsRequired();
         }
     }
 }

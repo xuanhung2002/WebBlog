@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\WebBlog.Application.csproj" />
-    <ProjectReference Include="..\Domain\WebBlog.Domain.csproj" />
   </ItemGroup>
 
 </Project>

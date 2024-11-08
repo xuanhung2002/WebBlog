@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Newtonsoft.Json;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace WebBlog.API.Authorization
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AccessAttribute : AuthorizeAttribute, IAsyncAuthorizationFilter
     {
-        private readonly IList<string> _rolesName = new List<string>();
-        public AccessAttribute(params string[] rolesName)
+        private readonly IList<string> _roles = new List<string>();
+        public AccessAttribute(params string[] roles)
         {
-            _rolesName = rolesName;
+            _roles = roles;
         }
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
@@ -32,9 +32,9 @@ namespace WebBlog.API.Authorization
             // Check if the user has any of the required roles
             var userRolesClaims = user.Claims
                 .FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-            var userRoles = JsonConvert.DeserializeObject<List<string>>(userRolesClaims);
+            var userRoles = JsonSerializer.Deserialize<List<string>>(userRolesClaims);
 
-            var hasAccess = _rolesName.Any(role => userRoles.Contains(role, StringComparer.OrdinalIgnoreCase));
+            var hasAccess = _roles.Any(role => userRoles.Contains(role, StringComparer.OrdinalIgnoreCase));
 
             if (!hasAccess)
             {

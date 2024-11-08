@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebBlog.API.Authorization;
+using WebBlog.Application.Dtos;
+using WebBlog.Application.Interface;
 using WebBlog.Domain;
 
 namespace WebBlog.API.Controllers
@@ -8,11 +10,24 @@ namespace WebBlog.API.Controllers
     [ApiController]
     public class PostController : ControllerBase
     {
+        private readonly IPostService _postService;
+        public PostController(IPostService postService)
+        {
+            _postService = postService;
+        }
         [HttpGet]
-        [Access(RoleNames.User)]
+        [AllowAnonymous]  
         public async Task<IActionResult> Get()
         {
-            return Ok("dep trai");
+            var posts = _postService.GetAllAsync();
+            return Ok(posts);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(PostDto dto)
+        {
+            var post = await _postService.AddAsync(dto);
+            return Ok(post);
         }
     }
 }

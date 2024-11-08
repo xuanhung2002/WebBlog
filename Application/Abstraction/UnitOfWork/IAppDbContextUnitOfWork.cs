@@ -7,7 +7,7 @@ using WebBlog.Application.Abstraction;
 
 namespace WebBlog.Infrastructure.UoWMultiContext
 {
-    public interface IApplicationDbContextUnitOfWork : IUnitOfWorkDbContext<ApplicationDbContext>
+    public interface IAppDbContextUnitOfWork : IUnitOfWorkWithContext
     {
     }
 }

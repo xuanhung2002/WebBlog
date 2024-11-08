@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebBlog.Application.Dtos.ApiRequestDtos;
 using WebBlog.Application.Exceptions;
 using WebBlog.Application.ExternalServices;
@@ -27,7 +22,7 @@ namespace WebBlog.Application.Services
             _userManager = userManager;
             _configuration = configuration;
         }
-        public async Task<string> LoginAsync(LoginDto dto)
+        public async Task<string> LoginAsync(LoginDto dto, string ipAddress)
         {
             var user = await _userManager.FindByNameAsync(dto.UserName);
             if (user == null)
@@ -37,6 +32,10 @@ namespace WebBlog.Application.Services
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
             if (result.Succeeded)
             {
+                var refreshToken = HttpContextHelper.GenerateRefreshToken(ipAddress);
+                user.RefreshTokens.Add(refreshToken);
+                removeOldRefreshTokens(user);
+                await _userManager.UpdateAsync(user);
                 return HttpContextHelper.GenerateToken(user,_userManager, _configuration);
             }
             else
@@ -57,7 +56,7 @@ namespace WebBlog.Application.Services
             var result = await _userManager.CreateAsync(user, dto.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, RoleNames.User);
+                await _userManager.AddToRoleAsync(user, Roles.User);
                 return HttpContextHelper.GenerateToken(user, _userManager, _configuration);
             }
             else
@@ -65,5 +64,14 @@ namespace WebBlog.Application.Services
                 throw new BadRequestException(result.Errors.FirstOrDefault().Description.ToString());               
             }
         }
+
+        private Task removeOldRefreshTokens(AppUser appUser)
+        {
+            appUser.RefreshTokens.RemoveAll(x =>
+                !x.IsActive &&
+                x.CreatedDate.AddDays(7) <= DateTime.UtcNow);
+            return Task.CompletedTask;
+        }
+
     }
 }

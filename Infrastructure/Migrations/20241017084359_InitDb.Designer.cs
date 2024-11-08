@@ -11,7 +11,7 @@ using WebBlog.Infrastructure;
 
 namespace WebBlog.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20241017084359_InitDb")]
     partial class InitDb
     {

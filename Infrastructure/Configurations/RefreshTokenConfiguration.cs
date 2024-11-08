@@ -5,17 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebBlog.Domain.Entities;
+using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Persistance.Constants;
 
 namespace WebBlog.Infrastructure.Configurations
 {
-    public class PostConfiguration : IEntityTypeConfiguration<Post>
+    public sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
     {
-        public void Configure(EntityTypeBuilder<Post> builder)
+        public void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
-            builder.ToTable(TableNames.Post);
-            builder.HasKey(t => t.Id);
+            builder.ToTable(TableNames.RefreshToken);
+            builder.HasKey(x => x.Id);            
         }
     }
 }

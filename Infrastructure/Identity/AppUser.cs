@@ -9,6 +9,7 @@ namespace WebBlog.Infrastructure.Identity
         public string LastName { get; set; }
         public string? FullName { get; set; }
         public DateTime? DayOfBirth { get; set; }
+        public virtual List<RefreshToken> RefreshTokens { get; set; }
         public virtual ICollection<IdentityUserClaim<Guid>> Claims { get; set; }
         public virtual ICollection<IdentityUserToken<Guid>> Tokens { get; set; }
         public virtual ICollection<IdentityUserLogin<Guid>> Logins { get; set; }

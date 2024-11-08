@@ -16,6 +16,8 @@ namespace WebBlog.Infrastructure.Persistance.Constants
         internal const string AppUserLogins = nameof(AppUserLogins);
         internal const string AppUserTokens = nameof(AppUserTokens);
 
+        internal const string RefreshToken = nameof(RefreshToken);
+
         internal const string Post = nameof(Post);
     }
 }

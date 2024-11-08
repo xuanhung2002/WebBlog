@@ -8,11 +8,12 @@ using WebBlog.Application.Abstraction;
 
 namespace WebBlog.Infrastructure.UoWMultiContext
 {
-    public abstract class EFUnitOfWorkDbContext<TContext> : IUnitOfWorkDbContext<TContext>
+
+    public abstract class UnitOfWorkWithContext<TContext> : IUnitOfWorkWithContext
         where TContext : DbContext
     {
         private readonly TContext _context;
-        public EFUnitOfWorkDbContext(TContext context)
+        public UnitOfWorkWithContext(TContext context)
         {
             _context = context;
         }
@@ -20,12 +21,10 @@ namespace WebBlog.Infrastructure.UoWMultiContext
         {
             await _context.DisposeAsync();
         }
-
         public TContext GetDbContext()
         {
             return _context;
         }
-
         public async Task SaveChangeAsync(CancellationToken cancellationToken = default)
         {
             await _context.SaveChangesAsync();

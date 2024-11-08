@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebBlog.Application.Dtos
 {
-    public class UserDto : DtoBase<Guid>
+    public class UserDto : DtoBase
     {
         public string UserName { get; set; }
         public string FirstName { get; set; }

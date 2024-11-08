@@ -2,13 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using WebBlog.Domain.Abstraction.Entities;
+using WebBlog.Domain.Entities;
 using WebBlog.Infrastructure.Identity;
 
 namespace WebBlog.Infrastructure
 {
-    public sealed class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, Guid>
+    public sealed class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
             
@@ -43,6 +44,9 @@ namespace WebBlog.Infrastructure
 
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<AppRole> AppRoles { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         //
+
+        public DbSet<Post> Posts { get; set; }
     }
 }

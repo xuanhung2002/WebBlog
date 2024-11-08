@@ -10,7 +10,7 @@ namespace WebBlog.Application.ExternalServices
 {
     public interface IAuthService
     {
-        public Task<string> LoginAsync(LoginDto dto);
+        public Task<string> LoginAsync(LoginDto dto, string ipAddress);
         public Task<string> RegisterAsync(CreateUserRequest dto);
     }
 }

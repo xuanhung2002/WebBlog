@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using WebBlog.Application.Dtos;
+using WebBlog.Domain.Entities;
 
 namespace WebBlog.Application.Interface
 {
     public interface IPostService
     {
+        public Task<List<PostDto>> GetAllAsync();
+        public Task<Post> AddAsync(PostDto dto);
     }
 }

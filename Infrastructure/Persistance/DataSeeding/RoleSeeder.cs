@@ -9,18 +9,18 @@ namespace WebBlog.Infrastructure.Persistance.DataSeeding
     {
         public static async Task SeedRolesAsync(RoleManager<AppRole> roleManager)
         {
-            string[] roleNames = { RoleNames.Admin, RoleNames.User, RoleNames.Guest };
-            foreach (string roleName in roleNames)
+            string[] roles = { Roles.Admin, Roles.User, Roles.Guest };
+            foreach (string role in roles)
             {
-                if(!await roleManager.RoleExistsAsync(roleName))
+                if(!await roleManager.RoleExistsAsync(role))
                 {
-                    var role = new AppRole
+                    var newRole = new AppRole
                     {
-                        Name = roleName,
-                        RoleCode = roleName.ToUpper(),
-                        Description = $"{roleName} role"
+                        Name = role,
+                        RoleCode = role.ToUpper(),
+                        Description = $"{role} role"
                     };
-                    await roleManager.CreateAsync(role);
+                    await roleManager.CreateAsync(newRole);
                 }
             }
         }

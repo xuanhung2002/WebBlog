@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebBlog.Application.Dtos
 {
-    public class DtoBase<TId>
+    public class DtoBase
     {
-        public TId Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

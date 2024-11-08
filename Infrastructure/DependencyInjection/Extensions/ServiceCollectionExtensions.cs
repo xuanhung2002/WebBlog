@@ -8,11 +8,14 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using WebBlog.Application.Abstraction;
 using WebBlog.Application.ExternalServices;
 using WebBlog.Application.Interface;
 using WebBlog.Application.Mapper;
 using WebBlog.Application.Services;
 using WebBlog.Infrastructure.Identity;
+using WebBlog.Infrastructure.Persistance.Repositories;
+using WebBlog.Infrastructure.UoWMultiContext;
 
 namespace WebBlog.Infrastructure.DependencyInjection.Extensions
 {
@@ -20,7 +23,7 @@ namespace WebBlog.Infrastructure.DependencyInjection.Extensions
     {
         public static void AddSqlServerPersistence(this IServiceCollection services)
         {
-            services.AddDbContextPool<DbContext, ApplicationDbContext>((provider, builder) =>
+            services.AddDbContextPool<DbContext, AppDbContext>((provider, builder) =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 var options = provider.GetRequiredService<IOptionsMonitor<SqlServerRetryOptions>>();
@@ -38,7 +41,7 @@ namespace WebBlog.Infrastructure.DependencyInjection.Extensions
                                                         maxRetryCount: options.CurrentValue.MaxRetryCount,
                                                         maxRetryDelay: options.CurrentValue.MaxRetryDelay,
                                                         errorNumbersToAdd: options.CurrentValue.ErrorNumbersToAdd))
-                                    .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name))
+                                    .MigrationsAssembly(typeof(AppDbContext).Assembly.GetName().Name))
                 .AddInterceptors();
             });
 
@@ -49,13 +52,16 @@ namespace WebBlog.Infrastructure.DependencyInjection.Extensions
                 options.Lockout.AllowedForNewUsers = true;
                 options.User.RequireUniqueEmail = true;
             })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             
          }
 
         public static void AddRepositoryPersistence(this IServiceCollection services)
         {
+            services.AddScoped<IAppDBRepository, AppDBRepository<AppDbContext>>();
+            services.AddScoped<IAppDbContextUnitOfWork, AppDbContextUnitOfWork>();
+
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPostService, PostService>();
         }
