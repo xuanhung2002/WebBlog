@@ -15,64 +15,130 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
             _context = context;
         }
 
-        public IQueryable<T?> FindAll<T>(params Expression<Func<T, object>>[] includeProperties) where T : class
+        public async Task<T> AddAsync<T>(T entity, bool clearTracker = false) where T : class
         {
-            IQueryable<T?> items = _context.Set<T>().AsNoTracking();
-            if (includeProperties != null)
+            if (entity is EntityAuditBase baseEntity)
             {
-                foreach (var includeProperty in includeProperties)
+                baseEntity.CreatedDate = DateTime.Now;
+            }
+            var res = await _context.AddAsync(entity);
+            await SaveChangesAsync(clearTracker);
+            return res.Entity;
+        }
+
+        public async Task<int> AddRangeAsync<T>(IEnumerable<T> entities, bool clearTracker = false) where T : class
+        {
+            foreach (var entity in entities)
+            {
+                if (entity is EntityAuditBase baseEntity)
                 {
-                    items = items.Include(includeProperty);
+                    baseEntity.CreatedDate = DateTime.Now;
                 }
             }
-            return items;
+            await _context.Set<T>().AddRangeAsync(entities);
+            var res = await SaveChangesAsync(clearTracker);
+            return res;
         }
 
-        public IQueryable<T?> FindAll<T>(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties) where T : class
+        public async Task<int> DeleteAsync<T>(T entity, bool clearTracker = false) where T : class
         {
-            IQueryable<T?> items = _context.Set<T>().AsNoTracking();
-            if (includeProperties != null)
-            {
-                foreach (var includeProperty in includeProperties)
-                {
-                    items = items.Include(includeProperty);
-                }
-            }
-            return items.Where(predicate);
+            _context.Set<T>().Remove(entity);
+            var res = await SaveChangesAsync(clearTracker);
+            return res;
+
         }
 
-        public async Task<T?> FindByIdAsync<T>(Guid id, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includeProperties) where T : EntityAuditBase
-        {
-            
-            return await FindAll(includeProperties).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
-        }
-
-        public async Task<T?> FindSingleAsync<T>(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includeProperties) where T : class
-        {
-            return await FindAll(includeProperties).SingleOrDefaultAsync(predicate, cancellationToken);
-        }
-        public void Add<T>(T entity) where T : class
-        {
-            _context.Add(entity);
-        }
-
-        public void Remove<T>(T entity) where T : class
-        {
-            _context.Remove(entity);
-        }
-        public void Update<T>(T entity) where T : class
-        {
-            _context.Set<T>().Update(entity);
-        }
-        public async Task RemoveAsync<T>(Guid id, CancellationToken cancellation = default) where T : EntityAuditBase
-        {
-            var entity = await FindByIdAsync<T>(id, cancellation);
-            Remove(entity);
-        }
-
-        public void RemoveMultiple<T>(List<T> entities) where T : class
+        public async Task<int> DeleteRangeAsync<T>(IEnumerable<T> entities, bool clearTracker = false) where T : class
         {
             _context.Set<T>().RemoveRange(entities);
+            var res = await SaveChangesAsync(clearTracker);
+            return res;
+        }
+
+        public async Task<T?> FindAsync<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<T?> FindForUpdateAsync<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return await _context.Set<T>().AsTracking().FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<List<T>> GetAsync<T>(Expression<Func<T, bool>> predicate = default) where T : class
+        {
+            if (predicate == null)
+            {
+                return await _context.Set<T>().ToListAsync();
+            }
+            return await _context.Set<T>().Where(predicate).ToListAsync();
+        }
+
+        public async Task<List<R>> GetAsync<T, R>(Expression<Func<T, R>> selector, Expression<Func<T, bool>> predicate = default) where T : class
+        {
+            if (predicate == null)
+            {
+                return await _context.Set<T>().Select(selector).ToListAsync();
+            }
+            return await _context.Set<T>().Where(predicate).Select(selector).ToListAsync();
+        }
+
+        public IQueryable<T> GetSet<T>(Expression<Func<T, bool>> predicate = null) where T : class
+        {
+            if (predicate == null)
+            {
+                return _context.Set<T>().AsNoTracking();
+            }
+            return _context.Set<T>().Where(predicate);
+        }
+
+        public IQueryable<T?> GetSetAsTracking<T>(Expression<Func<T, bool>> predicate = null) where T : class
+        {
+            if (predicate == null)
+            {
+                return _context.Set<T>();
+            }
+            return _context.Set<T>().Where(predicate);
+        }
+
+
+
+        public async Task<int> SaveChangesAsync(bool clearTracker = false)
+        {
+            var res = await _context.SaveChangesAsync();
+            if (clearTracker)
+            {
+                _context.ChangeTracker.Clear();
+            }
+            return res;
+        }
+
+        public async Task<T> UpdateAsync<T>(T entity, bool clearTracker = true) where T : class
+        {
+            if (entity is EntityAuditBase baseEntity)
+            {
+                baseEntity.ModifiedDate = DateTime.UtcNow;
+            }
+            var res = _context.Set<T>().Update(entity);
+            await SaveChangesAsync(clearTracker);
+            return res.Entity;
+        }
+
+        public async Task<int> UpdateRangeAsync<T>(IEnumerable<T> entities, bool clearTracker = false) where T : class
+        {
+            foreach (var entity in entities)
+            {
+                if (entity is EntityAuditBase baseEntity)
+                {
+                    baseEntity.ModifiedDate = DateTime.UtcNow;
+                }
+            }
+            var res = await _context.SaveChangesAsync(clearTracker);
+            if (clearTracker)
+            {
+                _context.ChangeTracker.Clear();
+            }
+            return res;
         }
     }
 }

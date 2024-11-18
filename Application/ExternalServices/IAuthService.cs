@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebBlog.Application.Dtos.ApiRequestDtos;
+using WebBlog.Application.Dtos.AuthDtos;
 using static WebBlog.Application.Dtos.ApiRequestDtos.AuthDtos;
 
 namespace WebBlog.Application.ExternalServices
 {
     public interface IAuthService
     {
-        public Task<string> LoginAsync(LoginDto dto, string ipAddress);
+        public Task<AuthResponseDto> LoginAsync(LoginDto dto, string ipAddress);
+        public Task<AuthResponseDto> RefreshTokenAsync(string token, string ipAddress);
         public Task<string> RegisterAsync(CreateUserRequest dto);
     }
 }
