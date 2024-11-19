@@ -65,6 +65,11 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
             return await _context.Set<T>().AsTracking().FirstOrDefaultAsync(predicate);
         }
 
+        public async Task<bool> AnyAsync<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return await _context.Set<T>().AnyAsync(predicate);
+        }
+
         public async Task<List<T>> GetAsync<T>(Expression<Func<T, bool>> predicate = default) where T : class
         {
             if (predicate == null)

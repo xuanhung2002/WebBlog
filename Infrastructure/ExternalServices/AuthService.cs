@@ -15,6 +15,7 @@ using WebBlog.Application.ExternalServices;
 using WebBlog.Domain;
 using WebBlog.Infrastructure.Helpers;
 using WebBlog.Infrastructure.Identity;
+using WebBlog.Infrastructure.Workers;
 using static WebBlog.Application.Dtos.ApiRequestDtos.AuthDtos;
 
 namespace WebBlog.Application.Services
@@ -25,12 +26,14 @@ namespace WebBlog.Application.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IAppDBRepository _repository;
-        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository)
+        private readonly IBackgroundTaskQueue _taskQueue;
+        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository, IBackgroundTaskQueue taskQueue)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
             _repository = repository;
+            _taskQueue = taskQueue;
         }
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto, string ipAddress)
         {
@@ -44,19 +47,12 @@ namespace WebBlog.Application.Services
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
             if (result.Succeeded)
             {
-                var refreshToken = GenerateRefreshToken(ipAddress);
-
-                var existingTokens = new HashSet<string>(user.RefreshTokens.Select(s => s.Token));
-
-                while (existingTokens.Contains(refreshToken.Token))
-                {
-                    refreshToken = GenerateRefreshToken(ipAddress);
-                }
+                var refreshToken = await GenerateRefreshToken(ipAddress);               
 
                 user.RefreshTokens.Add(refreshToken);
                 await _userManager.UpdateAsync(user);
 
-                removeOldRefreshTokens(user);
+                await _taskQueue.QueueBackgroundWorkItemAsync(token => RemoveOldRefreshTokens(user));
 
                 response.AccessToken = GenerateAccessToken(user);
                 response.RefreshToken = refreshToken.Token;
@@ -82,18 +78,13 @@ namespace WebBlog.Application.Services
                 if (!refreshToken.IsActive)
                     throw new InvalidDataException("Invalid token");
 
-                var newRefreshToken = GenerateRefreshToken(ipAddress);
-
-                var existingTokens = new HashSet<string>(user.RefreshTokens.Select(s => s.Token));
-
-                while (existingTokens.Contains(newRefreshToken.Token))
-                {
-                    newRefreshToken = RotateRefreshToken(refreshToken, ipAddress);
-                }
+                var newRefreshToken = await GenerateRefreshToken(ipAddress);                
 
                 user.RefreshTokens.Add(newRefreshToken);
                 // remove old refresh token
-                user.RefreshTokens.Remove(refreshToken);
+                user.RefreshTokens.Remove(user.RefreshTokens.First(s => s.Token == refreshToken.Token));
+                await _taskQueue.QueueBackgroundWorkItemAsync(token => RemoveOldRefreshTokens(user));
+
                 await _userManager.UpdateAsync(user);
 
                 var accessToken = GenerateAccessToken(user);
@@ -106,9 +97,9 @@ namespace WebBlog.Application.Services
             }
             return null;
         }
-        private RefreshToken RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
+        private async Task<RefreshToken> RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
         {
-            var newRefreshToken = GenerateRefreshToken(ipAddress);
+            var newRefreshToken = await GenerateRefreshToken(ipAddress);
             RevokeRefreshToken(refreshToken, ipAddress/*, "Replaced by new token"*/, newRefreshToken.Token);
             return newRefreshToken;
         }
@@ -141,7 +132,7 @@ namespace WebBlog.Application.Services
             }
         }
 
-        private async Task removeOldRefreshTokens(AppUser appUser)
+        private async Task RemoveOldRefreshTokens(AppUser appUser)
         {
             appUser.RefreshTokens.RemoveAll(x =>
                 !x.IsActive &&
@@ -172,7 +163,7 @@ namespace WebBlog.Application.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public JwtSecurityToken? ValidateToken(string? token)
+        public object ValidateToken(string? token)
         {
             var tokenKey = _configuration["Tokens:Key"];
 
@@ -201,7 +192,7 @@ namespace WebBlog.Application.Services
                 return null;
             }
         }
-        public RefreshToken GenerateRefreshToken(string ipAddress)
+        public async Task<RefreshToken> GenerateRefreshToken(string ipAddress)
         {
             var refreshToken = new RefreshToken
             {
@@ -210,6 +201,11 @@ namespace WebBlog.Application.Services
                 CreatedDate = DateTime.UtcNow,
                 CreatedByIp = ipAddress
             };
+            var existed = await _repository.AnyAsync<RefreshToken>(s => s.Token == refreshToken.Token);
+            while(existed)
+            {
+              return await GenerateRefreshToken(ipAddress);
+            }
             return refreshToken;
         }
 

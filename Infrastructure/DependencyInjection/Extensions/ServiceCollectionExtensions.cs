@@ -15,8 +15,7 @@ using WebBlog.Application.Mapper;
 using WebBlog.Application.Services;
 using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Persistance.Repositories;
-using WebBlog.Infrastructure.UoWMultiContext;
-
+using WebBlog.Infrastructure.Workers;
 namespace WebBlog.Infrastructure.DependencyInjection.Extensions
 {
     public static class ServiceCollectionExtensions
@@ -60,10 +59,15 @@ namespace WebBlog.Infrastructure.DependencyInjection.Extensions
         public static void AddRepositoryPersistence(this IServiceCollection services)
         {
             services.AddScoped<IAppDBRepository, AppDBRepository<AppDbContext>>();
-            services.AddScoped<IAppDbContextUnitOfWork, AppDbContextUnitOfWork>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPostService, PostService>();
+        }
+
+        public static void AddBackgroupTaskQueue(this IServiceCollection services)
+        {
+            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+            services.AddHostedService<BackgroundWorkerService>();
         }
 
         public static void AddAutoMapper(this IServiceCollection services)

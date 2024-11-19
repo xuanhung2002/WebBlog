@@ -16,6 +16,7 @@ namespace WebBlog.Application.Abstraction.Repositories
         IQueryable<T?> GetSetAsTracking<T>(Expression<Func<T, bool>> predicate = null) where T : class;
         Task<T?> FindAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
         Task<T?> FindForUpdateAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
+        Task<bool> AnyAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
         Task<T> AddAsync<T>(T entity, bool clearTracker = false) where T : class;
         Task<int> AddRangeAsync<T>(IEnumerable<T> entities, bool clearTracker = false) where T : class;
         Task<T> UpdateAsync<T>(T entity, bool clearTracker = false) where T : class;

@@ -20,6 +20,7 @@ builder.Services.AddSwagger();
 
 builder.Services.ConfigureSqlServerRetryOptionsPersistence(builder.Configuration.GetSection(nameof(SqlServerRetryOptions)));
 builder.Services.AddSqlServerPersistence();
+builder.Services.AddBackgroupTaskQueue();
 builder.Services.AddRepositoryPersistence();
 builder.Services.AddAuthenticationWithJwt(builder.Configuration);
 builder.Services.AddAuthorization();

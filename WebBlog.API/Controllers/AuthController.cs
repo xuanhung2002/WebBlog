@@ -18,8 +18,8 @@ namespace WebBlog.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            var token = await _authService.LoginAsync(dto, IpAddress());
-            return Ok(new { token = token });
+            var response = await _authService.LoginAsync(dto, IpAddress());
+            return Ok(response);
 
         }
 
@@ -32,13 +32,13 @@ namespace WebBlog.API.Controllers
         // helper
 
         [HttpPost("refresh-token")]
-        public Task<IActionResult> RefreshToken()
+        public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            //var response = _userService.RefreshToken(refreshToken, ipAddress());
-            //setTokenCookie(response.RefreshToken);
-            //return Ok(response);
-            return null;
+            var response = await _authService.RefreshTokenAsync(refreshToken, IpAddress());
+            await SetTokenCookie(response.RefreshToken);
+            return Ok(response);
+
         }
         private async Task SetTokenCookie(string token)
         {

@@ -2,18 +2,15 @@
 using WebBlog.Application.Dtos;
 using WebBlog.Application.Interface;
 using WebBlog.Domain.Entities;
-using WebBlog.Infrastructure.UoWMultiContext;
 
 namespace WebBlog.Application.Services
 {
     public class PostService : IPostService
     {
         private readonly IAppDBRepository _repository;
-        private readonly IAppDbContextUnitOfWork _unitOfWork;
-        public PostService(IAppDBRepository repository, IAppDbContextUnitOfWork unitOfWork)
+        public PostService(IAppDBRepository repository)
         {
             _repository = repository;
-            _unitOfWork = unitOfWork;
         }
         public async Task<Post> AddAsync(PostDto dto)
         {
@@ -22,15 +19,12 @@ namespace WebBlog.Application.Services
                 Title = dto.Title,
                 Content = dto.Content,
             };
-            _repository.Add(newPost);
-            await _unitOfWork.SaveChangeAsync();
-            return newPost;
-
+            return await _repository.AddAsync(newPost);
         }
 
         public async Task<List<PostDto>> GetAllAsync()
         {
-            var posts = _repository.FindAll<Post>().ToList();
+            var posts = await _repository.GetAsync<Post>();
             var dtos = new List<PostDto>();
             foreach (var post in posts)
             {

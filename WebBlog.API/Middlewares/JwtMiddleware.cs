@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using WebBlog.Application.ExternalServices;
 using WebBlog.Infrastructure.Helpers;
 
 namespace WebBlog.API.Middlewares
@@ -11,10 +13,10 @@ namespace WebBlog.API.Middlewares
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, IConfiguration configuration)
+        public async Task Invoke(HttpContext context, IAuthService authService)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            var validationResult = HttpContextHelper.ValidateToken(token, configuration);
+            var validationResult = (JwtSecurityToken)authService.ValidateToken(token);
             if(validationResult != null)
             {
                 var claimsIdentity = new ClaimsIdentity(validationResult.Claims, "Bearer");
