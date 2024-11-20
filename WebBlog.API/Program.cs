@@ -9,6 +9,7 @@ using WebBlog.Infrastructure.Persistance.DataSeeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddLogging();
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -31,16 +32,16 @@ var app = builder.Build();
 // Seed roles
 var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
-//try
-//{
+try
+{
     var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
     await RoleSeeder.SeedRolesAsync(roleManager);
-//}
-//catch
-//{
-//    var logger = services.GetRequiredService<ILogger<Program>>();
-//    logger.LogError("Seed failed");
-//}
+}
+catch
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError("Seed failed");
+}
 
 
 

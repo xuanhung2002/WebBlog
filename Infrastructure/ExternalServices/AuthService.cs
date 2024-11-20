@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -22,18 +23,20 @@ namespace WebBlog.Application.Services
 {
     public class AuthService : IAuthService
     {
+        //private readonly ILogger _logger;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IAppDBRepository _repository;
         private readonly IBackgroundTaskQueue _taskQueue;
-        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository, IBackgroundTaskQueue taskQueue)
+        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository, IBackgroundTaskQueue taskQueue/*, ILogger logger*/)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
             _repository = repository;
             _taskQueue = taskQueue;
+            //_logger = logger;
         }
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto, string ipAddress)
         {
@@ -50,13 +53,14 @@ namespace WebBlog.Application.Services
                 var refreshToken = await GenerateRefreshToken(ipAddress);               
 
                 user.RefreshTokens.Add(refreshToken);
+
+                await RemoveOldRefreshTokens(user);
+
                 await _userManager.UpdateAsync(user);
 
-                await _taskQueue.QueueBackgroundWorkItemAsync(token => RemoveOldRefreshTokens(user));
-
-                response.AccessToken = GenerateAccessToken(user);
+                response.AccessToken = await GenerateAccessToken(user);
                 response.RefreshToken = refreshToken.Token;
-
+                //_logger.Information($"User {user.UserName} logged in");
                 return response;
             }
             else
@@ -78,16 +82,16 @@ namespace WebBlog.Application.Services
                 if (!refreshToken.IsActive)
                     throw new InvalidDataException("Invalid token");
 
-                var newRefreshToken = await GenerateRefreshToken(ipAddress);                
+                var newRefreshToken = await RotateRefreshToken(refreshToken, ipAddress);                
 
                 user.RefreshTokens.Add(newRefreshToken);
                 // remove old refresh token
-                user.RefreshTokens.Remove(user.RefreshTokens.First(s => s.Token == refreshToken.Token));
-                await _taskQueue.QueueBackgroundWorkItemAsync(token => RemoveOldRefreshTokens(user));
+                //user.RefreshTokens.Remove(user.RefreshTokens.First(s => s.Token == refreshToken.Token));
+                await RemoveOldRefreshTokens(user);
 
                 await _userManager.UpdateAsync(user);
 
-                var accessToken = GenerateAccessToken(user);
+                var accessToken = await GenerateAccessToken(user);
                 var response = new AuthResponseDto
                 {
                     AccessToken = accessToken,
@@ -100,7 +104,7 @@ namespace WebBlog.Application.Services
         private async Task<RefreshToken> RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
         {
             var newRefreshToken = await GenerateRefreshToken(ipAddress);
-            RevokeRefreshToken(refreshToken, ipAddress/*, "Replaced by new token"*/, newRefreshToken.Token);
+            RevokeRefreshToken(refreshToken, ipAddress, "Replaced by new token", newRefreshToken.Token);
             return newRefreshToken;
         }
         private void RevokeRefreshToken(RefreshToken token, string ipAddress, string reason = null,
@@ -108,8 +112,8 @@ namespace WebBlog.Application.Services
         {
             token.Revoked = DateTime.UtcNow;
             token.RevokedByIp = ipAddress;
-            //token.ReasonRevoked = reason;
-            //token.ReplacedByToken = replacedByToken;
+            token.RevokedReason = reason;
+            token.RevokedByToken = replacedByToken;
         }
         public async Task<string> RegisterAsync(CreateUserRequest dto)
         {
@@ -124,7 +128,7 @@ namespace WebBlog.Application.Services
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, Roles.User);
-                return GenerateAccessToken(user);
+                return await GenerateAccessToken(user);
             }
             else
             {
@@ -132,16 +136,16 @@ namespace WebBlog.Application.Services
             }
         }
 
-        private async Task RemoveOldRefreshTokens(AppUser appUser)
+        private Task RemoveOldRefreshTokens(AppUser appUser)
         {
             appUser.RefreshTokens.RemoveAll(x =>
                 !x.IsActive &&
                 x.CreatedDate.AddDays(2) <= DateTime.UtcNow);
-            await _userManager.UpdateAsync(appUser);
+            return Task.CompletedTask;
         }
 
 
-        public string GenerateAccessToken(AppUser user)
+        public async Task<string> GenerateAccessToken(AppUser user)
         {
             var tokenKey = _configuration["Tokens:Key"];
             var issuer = _configuration["Tokens:Issuer"];
@@ -209,5 +213,13 @@ namespace WebBlog.Application.Services
             return refreshToken;
         }
 
+        public async Task RevokeToken(string token, string ipAddress)
+        {
+            var refreshToken = await _repository.FindForUpdateAsync<RefreshToken>(s => s.Token == token);
+            if (!refreshToken.IsActive)
+                throw new InvalidDataException("Invalid token");
+            
+            RevokeRefreshToken(refreshToken, ipAddress);
+        }
     }
 }

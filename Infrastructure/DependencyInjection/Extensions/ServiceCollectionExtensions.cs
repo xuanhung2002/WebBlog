@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 using WebBlog.Application.Abstraction;
 using WebBlog.Application.ExternalServices;
@@ -159,6 +161,11 @@ namespace WebBlog.Infrastructure.DependencyInjection.Extensions
                     }
                 });
             });
+        }
+        public static void AddLogging(this WebApplicationBuilder builder)
+        {
+            builder.Host.UseSerilog((context, configuration) =>
+            configuration.ReadFrom.Configuration(context.Configuration));
         }
     }
 }
