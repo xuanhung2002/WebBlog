@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -75,6 +74,10 @@ namespace WebBlog.Application.Services
             if(refreshToken != null)
             {
                 var user = await _userManager.FindByIdAsync(refreshToken.AppUserId.ToString());
+                if(user == null)
+                {
+                    throw new InvalidDataException($"User with refresh token: {refreshToken.Token} is not existed");
+                }
                 if(refreshToken.IsRevoked)
                 {
                     /////

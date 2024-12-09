@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using WebBlog.API.Middlewares;
-using WebBlog.Infrastructure;
 using WebBlog.Infrastructure.DependencyInjection.Extensions;
 using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Persistance.DataSeeding;
@@ -24,6 +21,7 @@ builder.Services.AddSqlServerPersistence();
 builder.Services.AddBackgroupTaskQueue();
 builder.Services.AddRepositoryPersistence();
 builder.Services.AddAuthenticationWithJwt(builder.Configuration);
+builder.Services.AddCaching(builder.Configuration);
 builder.Services.AddAuthorization();
 
 

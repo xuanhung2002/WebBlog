@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using WebBlog.Application.Abstraction.Repositories;
+using WebBlog.Application.ExternalServices;
 using WebBlog.Domain.Abstraction;
 
 namespace WebBlog.Infrastructure.Persistance.Repositories
@@ -10,9 +11,11 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
 
     {
         private readonly TContext _context;
-        public RepositoryBaseDbContext(TContext context)
+        private readonly ICacheService _cacheService;
+        public RepositoryBaseDbContext(TContext context, ICacheService cacheService)
         {
             _context = context;
+            _cacheService = cacheService;
         }
 
         public async Task<T> AddAsync<T>(T entity, bool clearTracker = false) where T : class
@@ -138,6 +141,7 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
                     baseEntity.ModifiedDate = DateTime.UtcNow;
                 }
             }
+            _context.Set<T>().UpdateRange(entities);
             var res = await _context.SaveChangesAsync(clearTracker);
             if (clearTracker)
             {

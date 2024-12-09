@@ -15,6 +15,7 @@ using WebBlog.Application.ExternalServices;
 using WebBlog.Application.Interface;
 using WebBlog.Application.Mapper;
 using WebBlog.Application.Services;
+using WebBlog.Infrastructure.ExternalServices;
 using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Persistance.Repositories;
 using WebBlog.Infrastructure.Workers;
@@ -162,10 +163,21 @@ namespace WebBlog.Infrastructure.DependencyInjection.Extensions
                 });
             });
         }
+
+        public static void AddCaching(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration["Cache:Configuration"];
+                options.InstanceName = configuration["Cache:Instancename"];
+            });
+
+            services.AddScoped<ICacheService, CacheService>();
+        }
         public static void AddLogging(this WebApplicationBuilder builder)
         {
             builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(context.Configuration));
-        }
+        }     
     }
 }
