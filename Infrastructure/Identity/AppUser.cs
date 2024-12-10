@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WebBlog.Domain.Abstraction.Entities;
+using WebBlog.Domain.Entities;
 
 namespace WebBlog.Infrastructure.Identity
 {
@@ -20,5 +21,7 @@ namespace WebBlog.Infrastructure.Identity
         public Guid? ModifiedBy { get; set; }
         public bool IsDeleted { get; set; }
         public DateTimeOffset? DeletedAt { get; set; }
+
+        public virtual List<Post> Posts { get;}
     }
 }

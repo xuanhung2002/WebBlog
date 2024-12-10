@@ -33,7 +33,9 @@ var services = scope.ServiceProvider;
 try
 {
     var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await RoleSeeder.SeedRolesAsync(roleManager);
+    await AdminUserSeeder.SeedAdmin(userManager, services);
 }
 catch
 {

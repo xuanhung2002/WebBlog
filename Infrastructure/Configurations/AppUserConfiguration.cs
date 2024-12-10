@@ -34,6 +34,12 @@ namespace WebBlog.Infrastructure.Configurations
                 .WithOne()
                 .HasForeignKey(t => t.AppUserId)
                 .IsRequired();
+
+            // User - Post: One to many
+            builder.HasMany(e => e.Posts)
+                .WithOne()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq.Expressions;
 using WebBlog.Application.Abstraction.Repositories;
 using WebBlog.Application.ExternalServices;
@@ -10,12 +12,31 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
         where TContext : DbContext
 
     {
-        private readonly TContext _context;
+        private TContext context = null;
         private readonly ICacheService _cacheService;
-        public RepositoryBaseDbContext(TContext context, ICacheService cacheService)
+        private readonly IServiceProvider _serviceProvider;
+        protected TContext _context
         {
-            _context = context;
-            _cacheService = cacheService;
+            get
+            {
+                if (context == null)
+                {
+                    lock (_serviceProvider)
+                    {
+                        if (context == null)
+                        {
+                            context = _serviceProvider.GetService<TContext>();
+                        }
+                    }
+                }
+
+                return context;
+            }
+        }
+        public RepositoryBaseDbContext(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            _cacheService = _serviceProvider.GetService<ICacheService>();
         }
 
         public async Task<T> AddAsync<T>(T entity, bool clearTracker = false) where T : class

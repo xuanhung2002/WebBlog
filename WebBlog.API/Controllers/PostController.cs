@@ -19,11 +19,12 @@ namespace WebBlog.API.Controllers
         [AllowAnonymous]  
         public async Task<IActionResult> Get()
         {
-            var posts = _postService.GetAllAsync();
+            var posts = await _postService.GetAllAsync();
             return Ok(posts);
         }
 
         [HttpPost]
+        [Access(Roles.Admin, Roles.User)]
         public async Task<IActionResult> Add(PostDto dto)
         {
             var post = await _postService.AddAsync(dto);
