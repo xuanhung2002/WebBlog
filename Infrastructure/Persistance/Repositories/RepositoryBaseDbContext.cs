@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq.Expressions;
@@ -12,9 +13,11 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
         where TContext : DbContext
 
     {
+        public static readonly Guid SYSTEMACCOUNTID = new Guid("F02DF5BB-7460-497C-A700-462B1E2E624C");
         private TContext context = null;
         private readonly ICacheService _cacheService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ICurrentUserService _currentUserService;
         protected TContext _context
         {
             get
@@ -37,14 +40,23 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
         {
             _serviceProvider = serviceProvider;
             _cacheService = _serviceProvider.GetService<ICacheService>();
+            _currentUserService = _serviceProvider.GetService<ICurrentUserService>();
+        }
+
+        private void InitBaseEntity<T>(T entity) where T : class
+        {
+            if (entity is EntityAuditBase baseEntity)
+            {
+                DateTimeOffset createdDate = ((DateTimeOffset)(baseEntity.ModifiedDate = DateTimeOffset.UtcNow));
+                baseEntity.CreatedDate = createdDate;
+                Guid createdBy = (Guid)(baseEntity.ModifiedBy = _currentUserService.GetCurrentUser()?.Id ?? SYSTEMACCOUNTID);
+                baseEntity.CreatedBy = createdBy;
+            }
         }
 
         public async Task<T> AddAsync<T>(T entity, bool clearTracker = false) where T : class
         {
-            if (entity is EntityAuditBase baseEntity)
-            {
-                baseEntity.CreatedDate = DateTime.Now;
-            }
+            InitBaseEntity(entity);
             var res = await _context.AddAsync(entity);
             await SaveChangesAsync(clearTracker);
             return res.Entity;
@@ -54,10 +66,7 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
         {
             foreach (var entity in entities)
             {
-                if (entity is EntityAuditBase baseEntity)
-                {
-                    baseEntity.CreatedDate = DateTime.Now;
-                }
+                InitBaseEntity(entity);
             }
             await _context.Set<T>().AddRangeAsync(entities);
             var res = await SaveChangesAsync(clearTracker);
@@ -142,11 +151,19 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
             return res;
         }
 
-        public async Task<T> UpdateAsync<T>(T entity, bool clearTracker = true) where T : class
+        private void UpdateBaseEntity<T>(T entity) where T : class
         {
             if (entity is EntityAuditBase baseEntity)
             {
                 baseEntity.ModifiedDate = DateTime.UtcNow;
+                baseEntity.ModifiedBy = (Guid)(baseEntity.ModifiedBy = _currentUserService.GetCurrentUser()?.Id ?? SYSTEMACCOUNTID);
+            }
+        }
+        public async Task<T> UpdateAsync<T>(T entity, bool clearTracker = true) where T : class
+        {
+            if (entity is EntityAuditBase baseEntity)
+            {
+                UpdateBaseEntity(entity);
             }
             var res = _context.Set<T>().Update(entity);
             await SaveChangesAsync(clearTracker);
@@ -159,7 +176,7 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
             {
                 if (entity is EntityAuditBase baseEntity)
                 {
-                    baseEntity.ModifiedDate = DateTime.UtcNow;
+                    UpdateBaseEntity(entity);
                 }
             }
             _context.Set<T>().UpdateRange(entities);

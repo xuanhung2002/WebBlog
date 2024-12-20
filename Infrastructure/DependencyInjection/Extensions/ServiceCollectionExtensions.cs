@@ -65,6 +65,8 @@ namespace WebBlog.Infrastructure.DependencyInjection.Extensions
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPostService, PostService>();
+
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
         }
 
         public static void AddBackgroupTaskQueue(this IServiceCollection services)

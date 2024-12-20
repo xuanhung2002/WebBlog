@@ -1,7 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using WebBlog.Application;
+using WebBlog.Application.Common;
 using WebBlog.Application.ExternalServices;
-using WebBlog.Infrastructure.Helpers;
 
 namespace WebBlog.API.Middlewares
 {
@@ -22,6 +23,16 @@ namespace WebBlog.API.Middlewares
                 var claimsIdentity = new ClaimsIdentity(validationResult.Claims, "Bearer");
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                 context.User = claimsPrincipal;
+                var claimValue = context.User.Claims.FirstOrDefault(s => s.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (!Guid.TryParse(claimValue, out var userId))
+                {
+                    userId = Guid.Empty;
+                }
+                RuntimeContext.CurrentUser = new CUserBase
+                {
+                    Id = userId,
+                };
             }
 
             await _next(context);
