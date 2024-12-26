@@ -23,5 +23,10 @@ namespace WebBlog.Application.Abstraction.Repositories
         Task<int> UpdateRangeAsync<T>(IEnumerable<T> entities, bool clearTracker = false) where T : class;
         Task<int> DeleteAsync<T>(T entity, bool clearTracker = false) where T : class;
         Task<int> DeleteRangeAsync<T>(IEnumerable<T> entities, bool clearTracker = false) where T : class;
+
+        #region Cache
+        Task<T> FindFromCacheAsync<T>(Expression<Func<T, bool>> predicate = null) where T : class;
+        Task<List<T>> GetFromCacheAsync<T>(Expression<Func<T, bool>> predicate = null) where T : class;
+        #endregion
     }
 }
