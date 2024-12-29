@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebBlog.Infrastructure.Persistance.Constants
+﻿namespace WebBlog.Infrastructure.Persistance
 {
     internal static class TableNames
     {
@@ -19,5 +13,12 @@ namespace WebBlog.Infrastructure.Persistance.Constants
         internal const string RefreshToken = nameof(RefreshToken);
 
         internal const string Post = nameof(Post);
+        internal const string PostReaction = nameof(PostReaction);
+        internal const string Comment = nameof(Comment);
+        internal const string CommentReaction = nameof(CommentReaction);
+        internal const string Category = nameof(Category);
+        internal const string SubCategory = nameof(SubCategory);
+        internal const string SearchHistory = nameof(SearchHistory);
+        internal const string WatchingPost = nameof(WatchingPost);
     }
 }

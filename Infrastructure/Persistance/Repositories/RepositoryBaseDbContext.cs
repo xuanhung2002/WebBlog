@@ -6,14 +6,14 @@ using System.Linq.Expressions;
 using WebBlog.Application.Abstraction.Repositories;
 using WebBlog.Application.ExternalServices;
 using WebBlog.Domain.Abstraction;
+using WebBlog.Domain.Constants;
 
 namespace WebBlog.Infrastructure.Persistance.Repositories
 {
     public class RepositoryBaseDbContext<TContext> : IRepositoryBaseDbContext
         where TContext : DbContext
 
-    {
-        public static readonly Guid SYSTEMACCOUNTID = new Guid("F02DF5BB-7460-497C-A700-462B1E2E624C");
+    {        
         private TContext context = null;
         private readonly ICacheService _cacheService;
         private readonly IServiceProvider _serviceProvider;
@@ -49,7 +49,7 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
             {
                 DateTimeOffset createdDate = ((DateTimeOffset)(baseEntity.ModifiedDate = DateTimeOffset.UtcNow));
                 baseEntity.CreatedDate = createdDate;
-                Guid createdBy = (Guid)(baseEntity.ModifiedBy = _currentUserService.GetCurrentUser()?.Id ?? SYSTEMACCOUNTID);
+                Guid createdBy = (Guid)(baseEntity.ModifiedBy = _currentUserService.GetCurrentUser()?.Id ?? SystemConstants.SYSTEMACCOUNTID);
                 baseEntity.CreatedBy = createdBy;
             }
         }
@@ -170,7 +170,7 @@ namespace WebBlog.Infrastructure.Persistance.Repositories
             if (entity is EntityAuditBase baseEntity)
             {
                 baseEntity.ModifiedDate = DateTime.UtcNow;
-                baseEntity.ModifiedBy = (Guid)(baseEntity.ModifiedBy = _currentUserService.GetCurrentUser()?.Id ?? SYSTEMACCOUNTID);
+                baseEntity.ModifiedBy = (Guid)(baseEntity.ModifiedBy = _currentUserService.GetCurrentUser()?.Id ?? SystemConstants.SYSTEMACCOUNTID);
             }
         }
         public async Task<T> UpdateAsync<T>(T entity, bool clearTracker = true) where T : class

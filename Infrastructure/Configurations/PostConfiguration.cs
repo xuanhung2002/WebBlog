@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebBlog.Domain.Entities;
-using WebBlog.Infrastructure.Persistance.Constants;
+using WebBlog.Infrastructure.Persistance;
 
 namespace WebBlog.Infrastructure.Configurations
 {
@@ -16,6 +11,15 @@ namespace WebBlog.Infrastructure.Configurations
         {
             builder.ToTable(TableNames.Post);
             builder.HasKey(t => t.Id);
+
+            builder.HasMany(s => s.Comments)
+                .WithOne()
+                .HasForeignKey(s => s.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(s => s.Reactions)
+                .WithOne()
+                .HasForeignKey(s => s.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

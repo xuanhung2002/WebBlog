@@ -17,6 +17,7 @@ using WebBlog.Application.Mapper;
 using WebBlog.Application.Services;
 using WebBlog.Infrastructure.ExternalServices;
 using WebBlog.Infrastructure.Identity;
+using WebBlog.Infrastructure.Mappings;
 using WebBlog.Infrastructure.Persistance.Repositories;
 using WebBlog.Infrastructure.Workers;
 namespace WebBlog.Infrastructure.DependencyInjection.Extensions
@@ -180,6 +181,12 @@ namespace WebBlog.Infrastructure.DependencyInjection.Extensions
         {
             builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(context.Configuration));
-        }     
+        }
+
+        public static void AddAutoMapper(this IServiceCollection services, IConfiguration configuration)
+        {
+            
+            services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+        }
     }
 }

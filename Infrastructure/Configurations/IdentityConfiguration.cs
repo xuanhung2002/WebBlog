@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using WebBlog.Infrastructure.Persistance.Constants;
+using WebBlog.Infrastructure.Persistance;
 
 namespace WebBlog.Infrastructure.Configurations;
 

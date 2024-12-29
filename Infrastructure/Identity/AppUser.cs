@@ -22,6 +22,8 @@ namespace WebBlog.Infrastructure.Identity
         public bool IsDeleted { get; set; }
         public DateTimeOffset? DeletedAt { get; set; }
 
-        public virtual List<Post> Posts { get;}
+        public virtual List<Post> Posts { get;} = new List<Post>();
+        public virtual List<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual List<PostReaction> PostReactions { get; set; }
     }
 }

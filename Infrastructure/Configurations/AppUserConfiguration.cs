@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WebBlog.Infrastructure.Identity;
-using WebBlog.Infrastructure.Persistance.Constants;
+using WebBlog.Infrastructure.Persistance;
 
 namespace WebBlog.Infrastructure.Configurations
 {
@@ -40,6 +40,16 @@ namespace WebBlog.Infrastructure.Configurations
                 .WithOne()
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+            // User - Comment: One to many
+            builder.HasMany(e => e.Comments)
+                .WithOne()
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+            // User - PostReaction: One to many
+            builder.HasMany(e => e.PostReactions)
+                .WithOne()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

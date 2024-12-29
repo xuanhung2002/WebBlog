@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebBlog.Domain.Abstraction;
 
-namespace WebBlog.Domain.Entities
+namespace WebBlog.Application.Common
 {
-    public class WatchingPost : EntityAuditBase
+    public class CAddResult
     {
+        public Guid Id { get; set; }
     }
 }

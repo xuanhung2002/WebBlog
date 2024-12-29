@@ -1,4 +1,6 @@
-﻿using WebBlog.Application.Abstraction;
+﻿using AutoMapper;
+using WebBlog.Application.Abstraction;
+using WebBlog.Application.Common;
 using WebBlog.Application.Dtos;
 using WebBlog.Application.Interface;
 using WebBlog.Domain.Entities;
@@ -8,18 +10,20 @@ namespace WebBlog.Application.Services
     public class PostService : IPostService
     {
         private readonly IAppDBRepository _repository;
+        private readonly IMapper _mapper;
         public PostService(IAppDBRepository repository)
         {
             _repository = repository;
         }
-        public async Task<Post> AddAsync(PostDto dto)
+        public async Task<CAddResult> AddAsync(PostDto dto)
         {
-            var newPost = new Post
+            var post = _mapper.Map<Post>(dto);
+            post.UserId = RuntimeContext.CurrentUser?.Id;
+            post = await _repository.AddAsync(post);
+            return new CAddResult
             {
-                Title = dto.Title,
-                Content = dto.Content,
+                Id = post.Id,
             };
-            return await _repository.AddAsync(newPost);
         }
 
         public async Task<List<PostDto>> GetAllAsync()
