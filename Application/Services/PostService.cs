@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using WebBlog.Application.Abstraction;
 using WebBlog.Application.Common;
-using WebBlog.Application.Dtos;
-using WebBlog.Application.Interface;
+using WebBlog.Application.Dto;
+using WebBlog.Application.Interfaces;
 using WebBlog.Domain.Entities;
 
 namespace WebBlog.Application.Services

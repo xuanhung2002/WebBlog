@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Linq.Expressions;
-using WebBlog.Application.Abstraction.Repositories;
+using WebBlog.Application.Abstraction;
 using WebBlog.Application.ExternalServices;
-using WebBlog.Domain.Abstraction;
-using WebBlog.Domain.Constants;
+using WebBlog.Application.Interfaces;
+using WebBlog.Domain.Constant;
+using WebBlog.Domain.Entities;
 
-namespace WebBlog.Infrastructure.Persistance.Repositories
+namespace WebBlog.Infrastructure.Persistances
 {
     public class RepositoryBaseDbContext<TContext> : IRepositoryBaseDbContext
         where TContext : DbContext

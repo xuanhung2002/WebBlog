@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebBlog.API.Authorization;
-using WebBlog.Application.Dtos;
-using WebBlog.Application.Interface;
-using WebBlog.Domain;
+using WebBlog.Application.Dto;
+using WebBlog.Application.Interfaces;
+using WebBlog.Domain.Constant;
 
 namespace WebBlog.API.Controllers
 {

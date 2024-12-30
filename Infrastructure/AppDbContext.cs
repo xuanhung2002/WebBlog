@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using WebBlog.Domain.Abstraction.Entities;
 using WebBlog.Domain.Entities;
 using WebBlog.Infrastructure.Identity;
 

@@ -1,16 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebBlog.Application.Exceptions;
-using WebBlog.Domain;
+using WebBlog.Domain.Constant;
 using WebBlog.Infrastructure.Identity;
 
-namespace WebBlog.Infrastructure.Persistance.DataSeeding
+namespace WebBlog.Infrastructure.Persistances
 {
     public class AdminUserSeeder
     {

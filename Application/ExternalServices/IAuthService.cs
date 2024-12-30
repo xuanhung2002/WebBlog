@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebBlog.Application.Dtos.ApiRequestDtos;
-using WebBlog.Application.Dtos.AuthDtos;
-using static WebBlog.Application.Dtos.ApiRequestDtos.AuthDtos;
+﻿using WebBlog.Application.Dto;
+using static WebBlog.Application.Dto.AuthDtos;
 
 namespace WebBlog.Application.ExternalServices
 {

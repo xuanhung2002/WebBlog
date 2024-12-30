@@ -1,6 +1,4 @@
-﻿using WebBlog.Domain.Abstraction;
-
-namespace WebBlog.Domain.Entities
+﻿namespace WebBlog.Domain.Entities
 {
     public class Post : EntityAuditBase
     {   

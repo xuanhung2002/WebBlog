@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using WebBlog.Application.Dtos.ApiRequestDtos;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebBlog.Application.Dto;
 using WebBlog.Application.ExternalServices;
-using static WebBlog.Application.Dtos.ApiRequestDtos.AuthDtos;
+using static WebBlog.Application.Dto.AuthDtos;
 
 namespace WebBlog.API.Controllers
 {
@@ -19,6 +18,7 @@ namespace WebBlog.API.Controllers
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var response = await _authService.LoginAsync(dto, IpAddress());
+            SetTokenCookie(response.RefreshToken);
             return Ok(response);
 
         }
@@ -29,18 +29,17 @@ namespace WebBlog.API.Controllers
             var token = await _authService.RegisterAsync(dto);
             return Ok(new { token = token });
         }
-        // helper
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
             var response = await _authService.RefreshTokenAsync(refreshToken, IpAddress());
-            await SetTokenCookie(response.RefreshToken);
+            SetTokenCookie(response.RefreshToken);
             return Ok(response);
 
         }
-        private async Task SetTokenCookie(string token)
+        private void SetTokenCookie(string token)
         {
 
             var cookieOptions = new CookieOptions

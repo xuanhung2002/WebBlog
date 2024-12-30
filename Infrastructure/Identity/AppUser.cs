@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using WebBlog.Domain.Abstraction.Entities;
 using WebBlog.Domain.Entities;
 
 namespace WebBlog.Infrastructure.Identity

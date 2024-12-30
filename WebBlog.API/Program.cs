@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using WebBlog.API.Middlewares;
-using WebBlog.Infrastructure.DependencyInjection.Extensions;
+using WebBlog.Infrastructure;
 using WebBlog.Infrastructure.Identity;
-using WebBlog.Infrastructure.Persistance.DataSeeding;
+using WebBlog.Infrastructure.Persistances;
 
 var builder = WebApplication.CreateBuilder(args);
 

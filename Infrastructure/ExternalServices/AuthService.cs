@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -8,17 +7,15 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using WebBlog.Application.Abstraction;
-using WebBlog.Application.Dtos.ApiRequestDtos;
-using WebBlog.Application.Dtos.AuthDtos;
+using WebBlog.Application.Dto;
 using WebBlog.Application.Exceptions;
 using WebBlog.Application.ExternalServices;
-using WebBlog.Domain;
-using WebBlog.Infrastructure.Helpers;
+using WebBlog.Domain.Constant;
 using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Workers;
-using static WebBlog.Application.Dtos.ApiRequestDtos.AuthDtos;
+using static WebBlog.Application.Dto.AuthDtos;
 
-namespace WebBlog.Application.Services
+namespace WebBlog.Infrastructure.ExternalServices
 {
     public class AuthService : IAuthService
     {
@@ -110,8 +107,8 @@ namespace WebBlog.Application.Services
             RevokeRefreshToken(refreshToken, ipAddress, "Replaced by new token", newRefreshToken.Token);
             return newRefreshToken;
         }
-        private void RevokeRefreshToken(RefreshToken token, string ipAddress, string reason = null,
-            string replacedByToken = null)
+        private void RevokeRefreshToken(RefreshToken token, string ipAddress, string? reason = null,
+            string? replacedByToken = null)
         {
             token.Revoked = DateTime.UtcNow;
             token.RevokedByIp = ipAddress;

@@ -12,15 +12,15 @@ using Serilog;
 using System.Text;
 using WebBlog.Application.Abstraction;
 using WebBlog.Application.ExternalServices;
-using WebBlog.Application.Interface;
+using WebBlog.Application.Interfaces;
 using WebBlog.Application.Mapper;
 using WebBlog.Application.Services;
 using WebBlog.Infrastructure.ExternalServices;
 using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Mappings;
-using WebBlog.Infrastructure.Persistance.Repositories;
+using WebBlog.Infrastructure.Persistances;
 using WebBlog.Infrastructure.Workers;
-namespace WebBlog.Infrastructure.DependencyInjection.Extensions
+namespace WebBlog.Infrastructure
 {
     public static class ServiceCollectionExtensions
     {

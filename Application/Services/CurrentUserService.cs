@@ -1,8 +1,7 @@
-﻿using WebBlog.Application;
-using WebBlog.Application.Common;
-using WebBlog.Application.ExternalServices;
+﻿using WebBlog.Application.Common;
+using WebBlog.Application.Interfaces;
 
-namespace WebBlog.Infrastructure.ExternalServices
+namespace WebBlog.Application.Services
 {
     public class CurrentUserService : ICurrentUserService
     {

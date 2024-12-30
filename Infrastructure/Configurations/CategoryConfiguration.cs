@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WebBlog.Domain.Entities;
-using WebBlog.Infrastructure.Persistance;
+using WebBlog.Infrastructure.Persistances;
 
-namespace WebBlog.Infrastructure
+namespace WebBlog.Infrastructure.Configurations
 {
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {

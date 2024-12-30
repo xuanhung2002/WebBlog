@@ -1,4 +1,4 @@
-﻿namespace WebBlog.Infrastructure.Persistance
+﻿namespace WebBlog.Infrastructure.Persistances
 {
     internal static class TableNames
     {

@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WebBlog.Domain;
+using WebBlog.Domain.Constant;
 using WebBlog.Infrastructure.Identity;
 
 
-namespace WebBlog.Infrastructure.Persistance.DataSeeding
+namespace WebBlog.Infrastructure.Persistances
 {
     public class RoleSeeder
     {

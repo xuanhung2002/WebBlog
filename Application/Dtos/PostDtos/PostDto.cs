@@ -1,4 +1,4 @@
-﻿namespace WebBlog.Application.Dtos
+﻿namespace WebBlog.Application.Dto
 {
     public class PostDto : DtoBase
     {

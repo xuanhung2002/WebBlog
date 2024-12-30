@@ -1,4 +1,4 @@
-﻿namespace WebBlog.Domain
+﻿namespace WebBlog.Domain.Constant
 {
     public static class Roles
     {

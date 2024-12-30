@@ -1,7 +1,7 @@
 ﻿using WebBlog.Application.Abstraction;
 using WebBlog.Application.ExternalServices;
 
-namespace WebBlog.Infrastructure.Persistance.Repositories
+namespace WebBlog.Infrastructure.Persistances
 {
     public class AppDBRepository<AppDBContext> : RepositoryBaseDbContext<AppDbContext>, IAppDBRepository
     {
