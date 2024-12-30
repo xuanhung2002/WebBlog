@@ -11,9 +11,12 @@ namespace WebBlog.Application.Services
     {
         private readonly IAppDBRepository _repository;
         private readonly IMapper _mapper;
-        public PostService(IAppDBRepository repository)
+        private readonly IAppLogger<PostService> _logger;
+        public PostService(IAppDBRepository repository, IAppLogger<PostService> logger, IMapper mapper)
         {
             _repository = repository;
+            _logger = logger;
+            _mapper = mapper;
         }
         public async Task<CAddResult> AddAsync(PostDto dto)
         {
@@ -29,18 +32,21 @@ namespace WebBlog.Application.Services
         public async Task<List<PostDto>> GetAllAsync()
         {
             var posts = await _repository.GetAsync<Post>();
-            var dtos = new List<PostDto>();
-            foreach (var post in posts)
-            {
-                dtos.Add(new PostDto
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Content = post.Content,
-                });
-            }
+            var dtos = _mapper.Map<List<PostDto>>(posts);     
             return dtos;
         }
 
+        public async Task<PostDto> GetByIdAsync(Guid id)
+        {
+            var post = await _repository.FindAsync<Post>(s => s.Id == id);
+            if (post == null)
+            {
+                _logger.Warning($"Post id: {id} is not existed");
+                return null;
+            }
+
+            var postDto = _mapper.Map<PostDto>(post);
+            return postDto;
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace WebBlog.Application.ExternalServices
     {
         public Task<AuthResponseDto> LoginAsync(LoginDto dto, string ipAddress);
         public Task<AuthResponseDto> RefreshTokenAsync(string token, string ipAddress);
-        public Task<string> RegisterAsync(CreateUserRequest dto);
+        public Task<bool> RegisterAsync(CreateUserRequest dto);
         public object ValidateToken(string? token);
         public Task RevokeToken(string token, string ipAddress);
     }

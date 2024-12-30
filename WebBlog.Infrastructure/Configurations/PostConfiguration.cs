@@ -20,6 +20,9 @@ namespace WebBlog.Infrastructure.Configurations
                 .WithOne()
                 .HasForeignKey(s => s.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // index
+            //builder.HasIndex(s => s.Content); // should be Full-text index
         }
     }
 }

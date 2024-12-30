@@ -30,5 +30,11 @@ namespace WebBlog.API.Controllers
             var post = await _postService.AddAsync(dto);
             return Ok(post);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var post = await _postService.GetByIdAsync(id);
+            return Ok(post);
+        }
     }
 }

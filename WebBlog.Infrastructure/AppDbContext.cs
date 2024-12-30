@@ -48,6 +48,8 @@ namespace WebBlog.Infrastructure
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PostReaction> PostReactions { get; set; }
+        public DbSet<Category> Categoroies { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
 
     }
 }

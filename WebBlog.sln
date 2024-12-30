@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebBlog.Application", "Application\WebBlog.Application.csproj", "{6FDFB8CB-87A5-4A13-A289-90F8899B17D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebBlog.Application", "WebBlog.Application\WebBlog.Application.csproj", "{6FDFB8CB-87A5-4A13-A289-90F8899B17D3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebBlog.Domain", "Domain\WebBlog.Domain.csproj", "{68B2B01B-8E45-487E-B893-F45ECC54D9D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebBlog.Domain", "WebBlog.Domain\WebBlog.Domain.csproj", "{68B2B01B-8E45-487E-B893-F45ECC54D9D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebBlog.Infrastructure", "Infrastructure\WebBlog.Infrastructure.csproj", "{F67556F6-6682-4351-B2EC-E215EF93096E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebBlog.Infrastructure", "WebBlog.Infrastructure\WebBlog.Infrastructure.csproj", "{F67556F6-6682-4351-B2EC-E215EF93096E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebBlog.API", "WebBlog.API\WebBlog.API.csproj", "{19B08F6D-42E7-4F2E-BF20-9323E2E58B9A}"
 EndProject

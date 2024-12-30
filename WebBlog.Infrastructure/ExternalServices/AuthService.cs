@@ -10,7 +10,9 @@ using WebBlog.Application.Abstraction;
 using WebBlog.Application.Dto;
 using WebBlog.Application.Exceptions;
 using WebBlog.Application.ExternalServices;
+using WebBlog.Application.Interfaces;
 using WebBlog.Domain.Constant;
+using WebBlog.Domain.Entities;
 using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Workers;
 using static WebBlog.Application.Dto.AuthDtos;
@@ -19,20 +21,20 @@ namespace WebBlog.Infrastructure.ExternalServices
 {
     public class AuthService : IAuthService
     {
-        //private readonly ILogger _logger;
+        private readonly IAppLogger<AuthService> _logger;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IAppDBRepository _repository;
         private readonly IBackgroundTaskQueue _taskQueue;
-        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository, IBackgroundTaskQueue taskQueue/*, ILogger logger*/)
+        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository, IBackgroundTaskQueue taskQueue, IAppLogger<AuthService> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
             _repository = repository;
             _taskQueue = taskQueue;
-            //_logger = logger;
+            _logger = logger;
         }
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto, string ipAddress)
         {
@@ -40,6 +42,7 @@ namespace WebBlog.Infrastructure.ExternalServices
             var user = await _userManager.FindByNameAsync(dto.UserName);
             if (user == null)
             {
+                _logger.Info($"USER {dto.UserName} LOGIN FAILED");
                 throw new UnauthorizeException("Username is not existed");
             }
 
@@ -56,7 +59,7 @@ namespace WebBlog.Infrastructure.ExternalServices
 
                 response.AccessToken = await GenerateAccessToken(user);
                 response.RefreshToken = refreshToken.Token;
-                //_logger.Information($"User {user.UserName} logged in");
+                _logger.Info($"User {user.UserName} logged in");
                 return response;
             }
             else
@@ -115,7 +118,7 @@ namespace WebBlog.Infrastructure.ExternalServices
             token.RevokedReason = reason;
             token.RevokedByToken = replacedByToken;
         }
-        public async Task<string> RegisterAsync(CreateUserRequest dto)
+        public async Task<bool> RegisterAsync(CreateUserRequest dto)
         {
             var user = new AppUser
             {
@@ -128,7 +131,7 @@ namespace WebBlog.Infrastructure.ExternalServices
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, Roles.User);
-                return await GenerateAccessToken(user);
+                return true;
             }
             else
             {

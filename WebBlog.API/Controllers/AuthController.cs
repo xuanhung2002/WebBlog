@@ -26,8 +26,8 @@ namespace WebBlog.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(CreateUserRequest dto)
         {
-            var token = await _authService.RegisterAsync(dto);
-            return Ok(new { token = token });
+            var res = await _authService.RegisterAsync(dto);
+            return Ok(res);
         }
 
         [HttpPost("refresh-token")]

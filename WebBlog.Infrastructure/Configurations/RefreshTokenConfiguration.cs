@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using WebBlog.Infrastructure.Identity;
+using WebBlog.Domain.Entities;
 using WebBlog.Infrastructure.Persistances;
 
 namespace WebBlog.Infrastructure.Configurations

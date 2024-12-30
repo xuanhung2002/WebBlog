@@ -7,6 +7,7 @@ namespace WebBlog.Application.Interfaces
     {
         public Task<List<PostDto>> GetAllAsync();
         public Task<CAddResult> AddAsync(PostDto dto);
+        public Task<PostDto> GetByIdAsync(Guid id);
 
     }
 }

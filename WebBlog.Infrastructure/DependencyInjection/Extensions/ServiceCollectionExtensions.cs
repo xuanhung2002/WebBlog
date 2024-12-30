@@ -19,6 +19,7 @@ using WebBlog.Infrastructure.ExternalServices;
 using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Mappings;
 using WebBlog.Infrastructure.Persistances;
+using WebBlog.Infrastructure.Services;
 using WebBlog.Infrastructure.Workers;
 namespace WebBlog.Infrastructure
 {
@@ -181,11 +182,12 @@ namespace WebBlog.Infrastructure
         {
             builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(context.Configuration));
+            
+            builder.Services.AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
         }
 
         public static void AddAutoMapper(this IServiceCollection services, IConfiguration configuration)
-        {
-            
+        {           
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
         }
     }

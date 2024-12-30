@@ -1,6 +1,6 @@
 ﻿using WebBlog.Domain.Entities;
 
-namespace WebBlog.Infrastructure.Identity
+namespace WebBlog.Domain.Entities
 {
     public class RefreshToken : EntityAuditBase
     {

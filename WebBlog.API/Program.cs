@@ -23,7 +23,7 @@ builder.Services.AddRepositoryPersistence();
 builder.Services.AddAuthenticationWithJwt(builder.Configuration);
 builder.Services.AddCaching(builder.Configuration);
 builder.Services.AddAuthorization();
-
+builder.Services.AddAutoMapper();
 
 var app = builder.Build();
 
