@@ -9,6 +9,8 @@ namespace WebBlog.Infrastructure.Mappings
         public AutoMapperProfile()
         {
             CreateMap<Post, PostDto>().ReverseMap();
+
+            CreateMap<CreateUserRequest, UserDto>();
         }
     }
 }

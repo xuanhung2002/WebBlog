@@ -59,7 +59,7 @@ namespace WebBlog.Infrastructure.Persistances
             var res = await _context.AddAsync(entity);
             await SaveChangesAsync(clearTracker);
 
-            await RemoveCacheAsync(typeof(T));
+            //await RemoveCacheAsync(typeof(T));
             return res.Entity;
         }
 
@@ -91,17 +91,17 @@ namespace WebBlog.Infrastructure.Persistances
 
         public async Task<T?> FindAsync<T>(Expression<Func<T, bool>> predicate) where T : class
         {
-            var cacheKey = GetCacheKey(predicate);
-            var cachedData = await _cacheService.GetAsync<T>(cacheKey);
-            if (cachedData != null)
-            {
-                return cachedData;
-            }
+            //var cacheKey = GetCacheKey(predicate);
+            //var cachedData = await _cacheService.GetAsync<T>(cacheKey);
+            //if (cachedData != null)
+            //{
+            //    return cachedData;
+            //}
             var result = await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
-            if (result != null)
-            {
-                await _cacheService.SetAsync(cacheKey, result, TimeSpan.FromMinutes(30));
-            }
+            //if (result != null)
+            //{
+            //    await _cacheService.SetAsync(cacheKey, result, TimeSpan.FromMinutes(30));
+            //}
 
             return result;
         }

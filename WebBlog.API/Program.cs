@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Identity;
 using WebBlog.API.Middlewares;
 using WebBlog.Infrastructure;
-using WebBlog.Infrastructure.Identity;
-using WebBlog.Infrastructure.Persistances;
+using WebBlog.Infrastructure.Persistances.DataSeeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,10 +30,7 @@ var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 try
 {
-    var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
-    var userManager = services.GetRequiredService<UserManager<AppUser>>();
-    await RoleSeeder.SeedRolesAsync(roleManager);
-    await AdminUserSeeder.SeedAdmin(userManager, services);
+    await DataSeeder.SeedData(services);
 }
 catch
 {

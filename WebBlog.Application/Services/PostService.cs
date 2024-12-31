@@ -11,8 +11,8 @@ namespace WebBlog.Application.Services
     {
         private readonly IAppDBRepository _repository;
         private readonly IMapper _mapper;
-        private readonly IAppLogger<PostService> _logger;
-        public PostService(IAppDBRepository repository, IAppLogger<PostService> logger, IMapper mapper)
+        private readonly IAppLogger _logger;
+        public PostService(IAppDBRepository repository, IAppLogger logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;

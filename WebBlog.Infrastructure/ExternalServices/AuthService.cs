@@ -21,13 +21,13 @@ namespace WebBlog.Infrastructure.ExternalServices
 {
     public class AuthService : IAuthService
     {
-        private readonly IAppLogger<AuthService> _logger;
+        private readonly IAppLogger _logger;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IAppDBRepository _repository;
         private readonly IBackgroundTaskQueue _taskQueue;
-        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository, IBackgroundTaskQueue taskQueue, IAppLogger<AuthService> logger)
+        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository, IBackgroundTaskQueue taskQueue, IAppLogger logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -154,7 +154,7 @@ namespace WebBlog.Infrastructure.ExternalServices
             var issuer = _configuration["Tokens:Issuer"];
             var audience = _configuration["Tokens:Audience"];
             var expire = _configuration["Tokens:Expire"];
-            var roles = _userManager.GetRolesAsync(user).Result;
+            var roles = await _userManager.GetRolesAsync(user);
             var dateExpire = DateTime.UtcNow.AddHours(7).AddMinutes(int.Parse(expire));
             var claims = new[]
             {

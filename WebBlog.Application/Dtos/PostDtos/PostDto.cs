@@ -1,9 +1,12 @@
-﻿namespace WebBlog.Application.Dto
+﻿using WebBlog.Application.Dtos;
+
+namespace WebBlog.Application.Dto
 {
-    public class PostDto : DtoBase
+    public class PostDto : DtoAuditBase
     {
         public string? Title { get; set; }
         public string? Content { get; set; }
+        public Guid UserId { get; set; }
         public Guid SubCategoryId { get; set; }
     }
 }

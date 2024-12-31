@@ -13,7 +13,6 @@ using System.Text;
 using WebBlog.Application.Abstraction;
 using WebBlog.Application.ExternalServices;
 using WebBlog.Application.Interfaces;
-using WebBlog.Application.Mapper;
 using WebBlog.Application.Services;
 using WebBlog.Infrastructure.ExternalServices;
 using WebBlog.Infrastructure.Identity;
@@ -77,11 +76,6 @@ namespace WebBlog.Infrastructure
             services.AddHostedService<BackgroundWorkerService>();
         }
 
-        public static void AddAutoMapper(this IServiceCollection services)
-        {
-            var mapper = AutoMapperConfiguration.RegisterMap().CreateMapper();
-            services.AddSingleton(mapper);
-        }
         public static void AddInterceptorPersistence(this IServiceCollection services)
         {
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
@@ -183,10 +177,10 @@ namespace WebBlog.Infrastructure
             builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(context.Configuration));
             
-            builder.Services.AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
+            builder.Services.AddScoped<IAppLogger, AppLogger>();
         }
 
-        public static void AddAutoMapper(this IServiceCollection services, IConfiguration configuration)
+        public static void AddAutoMapper(this IServiceCollection services)
         {           
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
         }

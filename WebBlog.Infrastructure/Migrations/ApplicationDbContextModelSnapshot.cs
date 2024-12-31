@@ -44,7 +44,7 @@ namespace WebBlog.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoleClaims");
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -253,7 +253,7 @@ namespace WebBlog.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PostReactions");
+                    b.ToTable("PostReactions", (string)null);
                 });
 
             modelBuilder.Entity("WebBlog.Domain.Entities.RefreshToken", b =>
