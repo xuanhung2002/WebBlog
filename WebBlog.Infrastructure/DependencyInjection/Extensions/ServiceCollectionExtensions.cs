@@ -66,7 +66,7 @@ namespace WebBlog.Infrastructure
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPostService, PostService>();
-
+            services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
         }
 

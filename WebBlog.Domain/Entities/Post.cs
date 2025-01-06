@@ -6,6 +6,7 @@
         public string? Title { get; set; }
         public string? Content { get; set; }
 
+        public bool? IsAnonymous { get; set; }
         public Guid SubCategoryId { get; set; }
         public virtual List<Comment> Comments { get; set; }
         public virtual List<PostReaction> Reactions { get; set; }
