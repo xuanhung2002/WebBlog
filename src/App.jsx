@@ -13,7 +13,7 @@ function App() {
       CookiesEventTarget.removeEventListener("clearCookies", reset);
     };
   }, [reset])
-  return <div className='header-frame' style={{position:'fixed',top:'0',left:'0',width:'100%'}}>{routeElements}</div>;
+  return <div style={{position:'absolute',top:'0',left:'0',width:'100%'}}>{routeElements}</div>;
 }
 
 export default App
