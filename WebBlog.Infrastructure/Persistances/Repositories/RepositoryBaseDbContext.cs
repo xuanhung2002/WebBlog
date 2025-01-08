@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 using WebBlog.Application.Abstraction;
-using WebBlog.Application.ExternalServices;
 using WebBlog.Application.Interfaces;
+using WebBlog.Application.Interfaces.Caching;
 using WebBlog.Domain.Constant;
 using WebBlog.Domain.Entities;
 
@@ -14,7 +14,7 @@ namespace WebBlog.Infrastructure.Persistances
 
     {        
         private TContext context = null;
-        private readonly ICacheService _cacheService;
+        private readonly IDistributedCacheService _cacheService;
         private readonly IServiceProvider _serviceProvider;
         private readonly ICurrentUserService _currentUserService;
         protected TContext _context
@@ -38,7 +38,7 @@ namespace WebBlog.Infrastructure.Persistances
         public RepositoryBaseDbContext(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _cacheService = _serviceProvider.GetService<ICacheService>();
+            _cacheService = _serviceProvider.GetService<IDistributedCacheService>();
             _currentUserService = _serviceProvider.GetService<ICurrentUserService>();
         }
 

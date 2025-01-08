@@ -1,6 +1,6 @@
-﻿namespace WebBlog.Application.ExternalServices
+﻿namespace WebBlog.Application.Interfaces.Caching
 {
-    public interface ICacheService
+    public interface IDistributedCacheService
     {
         Task<T> GetAsync<T>(string key);
         Task SetAsync<T>(string key, T value, TimeSpan? expiration = null);

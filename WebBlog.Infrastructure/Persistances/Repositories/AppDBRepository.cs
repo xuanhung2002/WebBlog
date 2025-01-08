@@ -1,5 +1,4 @@
 ﻿using WebBlog.Application.Abstraction;
-using WebBlog.Application.ExternalServices;
 
 namespace WebBlog.Infrastructure.Persistances
 {

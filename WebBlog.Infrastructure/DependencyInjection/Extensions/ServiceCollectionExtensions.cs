@@ -11,14 +11,14 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using WebBlog.Application.Abstraction;
-using WebBlog.Application.ExternalServices;
 using WebBlog.Application.Interfaces;
+using WebBlog.Application.Interfaces.Caching;
 using WebBlog.Application.Services;
-using WebBlog.Infrastructure.ExternalServices;
 using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Mappings;
 using WebBlog.Infrastructure.Persistances;
 using WebBlog.Infrastructure.Services;
+using WebBlog.Infrastructure.Services.Caching;
 using WebBlog.Infrastructure.Workers;
 namespace WebBlog.Infrastructure
 {
@@ -162,7 +162,7 @@ namespace WebBlog.Infrastructure
             });
         }
 
-        public static void AddCaching(this IServiceCollection services, IConfiguration configuration)
+        public static void AddDistributedCaching(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddStackExchangeRedisCache(options =>
             {
@@ -170,7 +170,14 @@ namespace WebBlog.Infrastructure
                 options.InstanceName = configuration["Cache:Instancename"];
             });
 
-            services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<IDistributedCacheService, DistributedCacheService>();
+        }
+
+        public static void AddMemoryCaching(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+
+            services.AddScoped<IMemoryCacheService, MemoryCacheService>();
         }
         public static void AddLogging(this WebApplicationBuilder builder)
         {

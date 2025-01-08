@@ -14,4 +14,8 @@
     <ProjectReference Include="..\WebBlog.Domain\WebBlog.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ExternalServices\" />
+  </ItemGroup>
+
 </Project>

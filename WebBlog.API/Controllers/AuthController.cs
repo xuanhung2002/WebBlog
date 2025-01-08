@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebBlog.Application.Dto;
-using WebBlog.Application.ExternalServices;
+using WebBlog.Application.Interfaces;
 using static WebBlog.Application.Dto.AuthDtos;
 
 namespace WebBlog.API.Controllers

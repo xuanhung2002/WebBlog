@@ -19,7 +19,8 @@ builder.Services.AddSqlServerPersistence();
 builder.Services.AddBackgroupTaskQueue();
 builder.Services.AddRepositoryPersistence();
 builder.Services.AddAuthenticationWithJwt(builder.Configuration);
-builder.Services.AddCaching(builder.Configuration);
+builder.Services.AddDistributedCaching(builder.Configuration);
+builder.Services.AddMemoryCaching();
 builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper();
 

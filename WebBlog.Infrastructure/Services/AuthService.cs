@@ -9,7 +9,6 @@ using System.Text;
 using WebBlog.Application.Abstraction;
 using WebBlog.Application.Dto;
 using WebBlog.Application.Exceptions;
-using WebBlog.Application.ExternalServices;
 using WebBlog.Application.Interfaces;
 using WebBlog.Domain.Constant;
 using WebBlog.Domain.Entities;
@@ -17,7 +16,7 @@ using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Workers;
 using static WebBlog.Application.Dto.AuthDtos;
 
-namespace WebBlog.Infrastructure.ExternalServices
+namespace WebBlog.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
@@ -49,7 +48,7 @@ namespace WebBlog.Infrastructure.ExternalServices
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
             if (result.Succeeded)
             {
-                var refreshToken = await GenerateRefreshToken(ipAddress);               
+                var refreshToken = await GenerateRefreshToken(ipAddress);
 
                 user.RefreshTokens.Add(refreshToken);
 
@@ -71,21 +70,21 @@ namespace WebBlog.Infrastructure.ExternalServices
         public async Task<AuthResponseDto> RefreshTokenAsync(string token, string ipAddress)
         {
             var refreshToken = await _repository.FindAsync<RefreshToken>(s => s.Token == token);
-            if(refreshToken != null)
+            if (refreshToken != null)
             {
                 var user = await _userManager.FindByIdAsync(refreshToken.AppUserId.ToString());
-                if(user == null)
+                if (user == null)
                 {
                     throw new InvalidDataException($"User with refresh token: {refreshToken.Token} is not existed");
                 }
-                if(refreshToken.IsRevoked)
+                if (refreshToken.IsRevoked)
                 {
                     /////
                 }
                 if (!refreshToken.IsActive)
                     throw new InvalidDataException("Invalid token");
 
-                var newRefreshToken = await RotateRefreshToken(refreshToken, ipAddress);                
+                var newRefreshToken = await RotateRefreshToken(refreshToken, ipAddress);
 
                 user.RefreshTokens.Add(newRefreshToken);
                 // remove old refresh token
@@ -100,7 +99,7 @@ namespace WebBlog.Infrastructure.ExternalServices
                     AccessToken = accessToken,
                     RefreshToken = newRefreshToken.Token
                 };
-                return response;               
+                return response;
             }
             return null;
         }
@@ -135,7 +134,7 @@ namespace WebBlog.Infrastructure.ExternalServices
             }
             else
             {
-                throw new BadRequestException(result.Errors.FirstOrDefault().Description.ToString());               
+                throw new BadRequestException(result.Errors.FirstOrDefault().Description.ToString());
             }
         }
 
@@ -209,9 +208,9 @@ namespace WebBlog.Infrastructure.ExternalServices
                 CreatedByIp = ipAddress
             };
             var existed = await _repository.AnyAsync<RefreshToken>(s => s.Token == refreshToken.Token);
-            while(existed)
+            while (existed)
             {
-              return await GenerateRefreshToken(ipAddress);
+                return await GenerateRefreshToken(ipAddress);
             }
             return refreshToken;
         }
@@ -221,7 +220,7 @@ namespace WebBlog.Infrastructure.ExternalServices
             var refreshToken = await _repository.FindForUpdateAsync<RefreshToken>(s => s.Token == token);
             if (!refreshToken.IsActive)
                 throw new InvalidDataException("Invalid token");
-            
+
             RevokeRefreshToken(refreshToken, ipAddress);
         }
     }

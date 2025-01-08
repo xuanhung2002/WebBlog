@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using WebBlog.Application.Dto;
 using WebBlog.Domain.Entities;
+using WebBlog.Infrastructure.Identity;
 
 namespace WebBlog.Infrastructure.Mappings
 {
@@ -11,6 +12,8 @@ namespace WebBlog.Infrastructure.Mappings
             CreateMap<Post, PostDto>().ReverseMap();
 
             CreateMap<CreateUserRequest, UserDto>();
+
+            CreateMap<AppUser, UserDto>().ReverseMap();
         }
     }
 }

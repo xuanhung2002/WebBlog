@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using WebBlog.Application;
 using WebBlog.Application.Common;
-using WebBlog.Application.ExternalServices;
+using WebBlog.Application.Interfaces;
 
 namespace WebBlog.API.Middlewares
 {

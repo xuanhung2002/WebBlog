@@ -1,7 +1,7 @@
 ﻿using WebBlog.Application.Dto;
 using static WebBlog.Application.Dto.AuthDtos;
 
-namespace WebBlog.Application.ExternalServices
+namespace WebBlog.Application.Interfaces
 {
     public interface IAuthService
     {

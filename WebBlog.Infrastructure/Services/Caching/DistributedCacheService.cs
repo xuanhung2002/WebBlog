@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
-using WebBlog.Application.ExternalServices;
+using WebBlog.Application.Interfaces.Caching;
 
-namespace WebBlog.Infrastructure.ExternalServices
+namespace WebBlog.Infrastructure.Services.Caching
 {
-    public class CacheService : ICacheService
+    public class DistributedCacheService : IDistributedCacheService
     {
         private readonly IDistributedCache _distributedCache;
-        public CacheService(IDistributedCache distributedCache)
+        public DistributedCacheService(IDistributedCache distributedCache)
         {
             _distributedCache = distributedCache;
         }
@@ -27,7 +27,7 @@ namespace WebBlog.Infrastructure.ExternalServices
             {
                 AbsoluteExpirationRelativeToNow = expiration
             };
-            
+
             await _distributedCache.SetStringAsync(key, serializedData, options);
         }
         public async Task<string?> GetStringAsync(string key)
