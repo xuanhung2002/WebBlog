@@ -19,6 +19,7 @@ using WebBlog.Infrastructure.Mappings;
 using WebBlog.Infrastructure.Persistances;
 using WebBlog.Infrastructure.Services;
 using WebBlog.Infrastructure.Services.Caching;
+using WebBlog.Infrastructure.Services.Identity;
 using WebBlog.Infrastructure.Workers;
 namespace WebBlog.Infrastructure
 {
@@ -63,11 +64,13 @@ namespace WebBlog.Infrastructure
         public static void AddRepositoryPersistence(this IServiceCollection services)
         {
             services.AddScoped<IAppDBRepository, AppDBRepository<AppDbContext>>();
-
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserCacheService, UserCacheService>();
         }
 
         public static void AddBackgroupTaskQueue(this IServiceCollection services)

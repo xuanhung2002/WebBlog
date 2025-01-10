@@ -1,9 +1,5 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using WebBlog.Application.Abstraction;
 using WebBlog.Application.Dto;
 using WebBlog.Application.Interfaces;
@@ -18,11 +14,13 @@ namespace WebBlog.Infrastructure.Services.Caching
         private readonly IMemoryCacheService _memoryCacheService;
         private readonly IAppDBRepository _repository;
         private readonly IMapper _mapper;
-        public UserCacheService(IMemoryCacheService memoryCacheService, IAppDBRepository repository, IMapper mapper)
+        private readonly UserManager<AppUser> _userManager;
+        public UserCacheService(IMemoryCacheService memoryCacheService, IAppDBRepository repository, IMapper mapper, UserManager<AppUser> userManager)
         {
             _memoryCacheService = memoryCacheService;
             _repository = repository;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<UserDto> GetUserFromCacheById(Guid id)
@@ -71,10 +69,9 @@ namespace WebBlog.Infrastructure.Services.Caching
 
             _memoryCacheService.Remove(UserCacheKey);
 
-            var users = await _repository.GetAsync<AppUser>(s => true); 
-            var userDtos = _mapper.Map<List<UserDto>>(users);
-
-            _memoryCacheService.Set(UserCacheKey, userDtos, TimeSpan.FromHours(1)); 
+            //var users = await _repository.GetAsync<AppUser>(s => true); 
+            //var userDtos = _mapper.Map<List<UserDto>>(users);
+            //_memoryCacheService.Set(UserCacheKey, userDtos, TimeSpan.FromHours(1)); 
         }
 
     }

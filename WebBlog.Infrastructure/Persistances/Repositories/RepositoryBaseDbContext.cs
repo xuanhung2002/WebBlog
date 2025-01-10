@@ -14,7 +14,6 @@ namespace WebBlog.Infrastructure.Persistances
 
     {        
         private TContext context = null;
-        private readonly IDistributedCacheService _cacheService;
         private readonly IServiceProvider _serviceProvider;
         private readonly ICurrentUserService _currentUserService;
         protected TContext _context
@@ -38,7 +37,6 @@ namespace WebBlog.Infrastructure.Persistances
         public RepositoryBaseDbContext(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _cacheService = _serviceProvider.GetService<IDistributedCacheService>();
             _currentUserService = _serviceProvider.GetService<ICurrentUserService>();
         }
 
@@ -58,8 +56,6 @@ namespace WebBlog.Infrastructure.Persistances
             InitBaseEntity(entity);
             var res = await _context.AddAsync(entity);
             await SaveChangesAsync(clearTracker);
-
-            //await RemoveCacheAsync(typeof(T));
             return res.Entity;
         }
 
@@ -91,18 +87,7 @@ namespace WebBlog.Infrastructure.Persistances
 
         public async Task<T?> FindAsync<T>(Expression<Func<T, bool>> predicate) where T : class
         {
-            //var cacheKey = GetCacheKey(predicate);
-            //var cachedData = await _cacheService.GetAsync<T>(cacheKey);
-            //if (cachedData != null)
-            //{
-            //    return cachedData;
-            //}
             var result = await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
-            //if (result != null)
-            //{
-            //    await _cacheService.SetAsync(cacheKey, result, TimeSpan.FromMinutes(30));
-            //}
-
             return result;
         }
 
@@ -201,57 +186,57 @@ namespace WebBlog.Infrastructure.Persistances
             return res;
         }
 
-        public async Task<T> FindFromCacheAsync<T>(Expression<Func<T, bool>> predicate = null) where T : class
-        {
-            var cacheKey = GetCacheKey<T>(predicate);
+        //    public async Task<T> FindFromCacheAsync<T>(Expression<Func<T, bool>> predicate = null) where T : class
+        //    {
+        //        var cacheKey = GetCacheKey<T>(predicate);
 
-            var cachedData = await _cacheService.GetAsync<T>(cacheKey);
-            if (cachedData != null)
-            {
-                return cachedData; 
-            }
+        //        var cachedData = _cacheService.Get<T>(cacheKey);
+        //        if (cachedData != null)
+        //        {
+        //            return cachedData; 
+        //        }
 
-            var result = await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
+        //        var result = await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
 
-            if (result != null)
-            {
-                await _cacheService.SetAsync(cacheKey, result, TimeSpan.FromMinutes(10));
-            }
+        //        if (result != null)
+        //        {
+        //            _cacheService.Set(cacheKey, result, TimeSpan.FromMinutes(10));
+        //        }
 
-            return result;
-        }
+        //        return result;
+        //    }
 
-        public async Task<List<T>> GetFromCacheAsync<T>(Expression<Func<T, bool>> predicate = null) where T : class
-        {
-            var cacheKey = GetCacheKey<T>(predicate);
+        //    public async Task<List<T>> GetFromCacheAsync<T>(Expression<Func<T, bool>> predicate = null) where T : class
+        //    {
+        //        var cacheKey = GetCacheKey<T>(predicate);
 
-            var cachedData = await _cacheService.GetAsync<List<T>>(cacheKey);
-            if (cachedData != null)
-            {
-                return cachedData;
-            }
+        //        var cachedData = _cacheService.Get<List<T>>(cacheKey);
+        //        if (cachedData != null)
+        //        {
+        //            return cachedData;
+        //        }
 
-            var result = await _context.Set<T>().Where(predicate).ToListAsync();
+        //        var result = await _context.Set<T>().Where(predicate).ToListAsync();
 
-            if (result.Any())
-            {
-                await _cacheService.SetAsync(cacheKey, result, TimeSpan.FromMinutes(10)); 
-            }
+        //        if (result.Any())
+        //        {
+        //            _cacheService.Set(cacheKey, result, TimeSpan.FromMinutes(10)); 
+        //        }
 
-            return result;
-        }
+        //        return result;
+        //    }
 
-        private string GetCacheKey<T>(Expression<Func<T, bool>> predicate)
-        {
-            var entityType = typeof(T).Name;
-            var predicateString = predicate != null ? predicate.ToString() : "all";
+        //    private string GetCacheKey<T>(Expression<Func<T, bool>> predicate)
+        //    {
+        //        var entityType = typeof(T).Name;
+        //        var predicateString = predicate != null ? predicate.ToString() : "all";
 
-            return $"{entityType}_{predicateString}";
-        }
-        private async Task RemoveCacheAsync(Type type)
-        {
-            var cacheKey = $"{type.Name}_";
-            await _cacheService.RemoveAsync(cacheKey);
-        }
+        //        return $"{entityType}_{predicateString}";
+        //    }
+        //    private async Task RemoveCacheAsync(Type type)
+        //    {
+        //        var cacheKey = $"{type.Name}_";
+        //        _cacheService.Remove(cacheKey);
+        //    }
     }
 }

@@ -7,10 +7,8 @@ using WebBlog.Application.Dto;
 
 namespace WebBlog.Application.Interfaces
 {
-    public interface IUserCacheService
+    public interface IUserService
     {
-        Task<UserDto> GetUserFromCacheById(Guid id);
-        Task<List<UserDto>> GetUserFromCacheByIds(List<Guid> ids);
-        Task RefreshUserCache(Guid? id = null);
+        Task<List<UserDto>> GetAllUserAsync();
     }
 }

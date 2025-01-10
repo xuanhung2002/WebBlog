@@ -16,7 +16,7 @@ using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Workers;
 using static WebBlog.Application.Dto.AuthDtos;
 
-namespace WebBlog.Infrastructure.Services
+namespace WebBlog.Infrastructure.Services.Identity
 {
     public class AuthService : IAuthService
     {
@@ -26,7 +26,8 @@ namespace WebBlog.Infrastructure.Services
         private readonly IConfiguration _configuration;
         private readonly IAppDBRepository _repository;
         private readonly IBackgroundTaskQueue _taskQueue;
-        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository, IBackgroundTaskQueue taskQueue, IAppLogger logger)
+        private readonly IUserCacheService _userCacheService;
+        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration configuration, IAppDBRepository repository, IBackgroundTaskQueue taskQueue, IAppLogger logger, IUserCacheService userCacheService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -34,6 +35,7 @@ namespace WebBlog.Infrastructure.Services
             _repository = repository;
             _taskQueue = taskQueue;
             _logger = logger;
+            _userCacheService = userCacheService;
         }
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto, string ipAddress)
         {
@@ -130,6 +132,7 @@ namespace WebBlog.Infrastructure.Services
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, Roles.User);
+                await _userCacheService.RefreshUserCache();
                 return true;
             }
             else
