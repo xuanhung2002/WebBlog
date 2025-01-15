@@ -11,6 +11,11 @@ namespace WebBlog.Infrastructure.Configurations
         {
             builder.ToTable(TableNames.Comment);
             builder.HasKey(t => t.Id);
+
+            builder.HasMany(s => s.Reactions)
+                .WithOne()
+                .HasForeignKey(t => t.CommentId)
+                .IsRequired();
         }
     }
 }

@@ -7,5 +7,6 @@
 
         public Guid PostId { get; set; }
         public Guid UserId { get; set; }
+        public virtual List<CommentReaction> Reactions { get; set; }
     }
 }

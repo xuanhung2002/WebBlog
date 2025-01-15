@@ -8,6 +8,7 @@ namespace WebBlog.Application.Abstraction
         Task<List<R>> GetAsync<T, R>(Expression<Func<T, R>> selector, Expression<Func<T, bool>> predicate = null) where T : class;
         IQueryable<T?> GetSet<T>(Expression<Func<T, bool>> predicate = null) where T : class;
         IQueryable<T?> GetSetAsTracking<T>(Expression<Func<T, bool>> predicate = null) where T : class;
+        Task<List<T>> GetWithOrderAsync<T>(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null) where T : class;
         Task<T?> FindAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
         Task<T?> FindForUpdateAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
         Task<bool> AnyAsync<T>(Expression<Func<T, bool>> predicate) where T : class;

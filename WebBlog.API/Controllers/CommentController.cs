@@ -39,5 +39,12 @@ namespace WebBlog.API.Controllers
             var res = await _commentService.AddAsync(dto);
             return Ok(res);
         }
+
+        [HttpPost("getbypost")]
+        public async Task<IActionResult> GetCommentByPost(GetCommentsRequest request)
+        {
+            var res = await _commentService.GetCommentByPostWithPaging(request);
+            return Ok(res);
+        }
     }
 }

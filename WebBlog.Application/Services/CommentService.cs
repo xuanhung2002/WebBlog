@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using WebBlog.Application.Abstraction;
 using WebBlog.Application.Common;
+using WebBlog.Application.Common.DataFilters;
+using WebBlog.Application.Common.Paging;
 using WebBlog.Application.Dtos.CommentDtos;
 using WebBlog.Application.Exceptions;
 using WebBlog.Application.Interfaces;
@@ -74,6 +76,40 @@ namespace WebBlog.Application.Services
             var entity = _mapper.Map<Comment>(dto);
             var res = await _repository.AddAsync(entity);
             return new CAddResult { Id = res.Id };
+        }
+
+        public async Task<TableInfo<CommentDto>> GetCommentByPostWithPaging(GetCommentsRequest request)
+        {
+            List<Comment> commentEntities = new List<Comment>();
+            if(request.CommentFilter != null)
+            {
+                switch(request.CommentFilter)
+                {
+                    case CCommentFilter.Newest:
+                        commentEntities = await _repository.GetWithOrderAsync<Comment>(orderBy: s => s.OrderByDescending(x => x.CreatedDate));
+                        break;
+                    case CCommentFilter.Oldest:
+                        commentEntities = await _repository.GetWithOrderAsync<Comment>(orderBy: s => s.OrderBy(x => x.CreatedDate));
+                        break;
+                    case CCommentFilter.MostPopular:
+                        commentEntities = await _repository.GetWithOrderAsync<Comment>(orderBy: s => s.OrderBy(x => x.Reactions.Count));
+                        break;
+                    default:
+                        commentEntities = await _repository.GetAsync<Comment>();
+                        break;
+                }
+            }
+            var totalCount = commentEntities.Count();
+            // apply paging
+            commentEntities = commentEntities.Skip(request.Parameter.PageIndex - 1).Take(request.Parameter.PageSize).ToList();
+            int pageCount = (int)Math.Ceiling(totalCount / (double)request.Parameter.PageSize);
+            var dtos = _mapper.Map<List<CommentDto>>(commentEntities);
+            return new TableInfo<CommentDto>
+            {
+                Items = dtos,
+                ItemsCount = totalCount,
+                PageCount = pageCount
+            };
         }
     }
 }

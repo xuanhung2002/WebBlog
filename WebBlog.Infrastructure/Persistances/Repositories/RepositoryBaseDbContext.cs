@@ -137,7 +137,21 @@ namespace WebBlog.Infrastructure.Persistances
             return _context.Set<T>().Where(predicate);
         }
 
+        public async Task<List<T>> GetWithOrderAsync<T>(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null) where T : class
+        {
+            IQueryable<T> query = _context.Set<T>();
 
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+            return await query.ToListAsync();
+        }
 
         public async Task<int> SaveChangesAsync(bool clearTracker = false)
         {
@@ -185,58 +199,5 @@ namespace WebBlog.Infrastructure.Persistances
             }
             return res;
         }
-
-        //    public async Task<T> FindFromCacheAsync<T>(Expression<Func<T, bool>> predicate = null) where T : class
-        //    {
-        //        var cacheKey = GetCacheKey<T>(predicate);
-
-        //        var cachedData = _cacheService.Get<T>(cacheKey);
-        //        if (cachedData != null)
-        //        {
-        //            return cachedData; 
-        //        }
-
-        //        var result = await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
-
-        //        if (result != null)
-        //        {
-        //            _cacheService.Set(cacheKey, result, TimeSpan.FromMinutes(10));
-        //        }
-
-        //        return result;
-        //    }
-
-        //    public async Task<List<T>> GetFromCacheAsync<T>(Expression<Func<T, bool>> predicate = null) where T : class
-        //    {
-        //        var cacheKey = GetCacheKey<T>(predicate);
-
-        //        var cachedData = _cacheService.Get<List<T>>(cacheKey);
-        //        if (cachedData != null)
-        //        {
-        //            return cachedData;
-        //        }
-
-        //        var result = await _context.Set<T>().Where(predicate).ToListAsync();
-
-        //        if (result.Any())
-        //        {
-        //            _cacheService.Set(cacheKey, result, TimeSpan.FromMinutes(10)); 
-        //        }
-
-        //        return result;
-        //    }
-
-        //    private string GetCacheKey<T>(Expression<Func<T, bool>> predicate)
-        //    {
-        //        var entityType = typeof(T).Name;
-        //        var predicateString = predicate != null ? predicate.ToString() : "all";
-
-        //        return $"{entityType}_{predicateString}";
-        //    }
-        //    private async Task RemoveCacheAsync(Type type)
-        //    {
-        //        var cacheKey = $"{type.Name}_";
-        //        _cacheService.Remove(cacheKey);
-        //    }
     }
 }

@@ -9,9 +9,11 @@ namespace WebBlog.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IUserCacheService _userCacheService;
+        public UserController(IUserService userService, IUserCacheService userCacheService)
         {
             _userService = userService;
+            _userCacheService = userCacheService;
         }
 
         [HttpGet]
@@ -19,6 +21,20 @@ namespace WebBlog.API.Controllers
         {
             var users = await _userService.GetAllUserAsync();
             return Ok(users);
+        }
+        [HttpPost("getfromcachebyids")]
+
+        public async Task<IActionResult> GetAllFromCacheByIds(List<Guid> ids)
+        {
+            var user = await _userCacheService.GetUserFromCacheByIds(ids);
+            return Ok(user);
+        }
+
+        [HttpGet("getfromcache/{id}")]
+        public async Task<IActionResult> GetAllFromCacheById(Guid id)
+        {
+            var user = await _userCacheService.GetUserFromCacheById(id);
+            return Ok(user);
         }
     }
 }

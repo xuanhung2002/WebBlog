@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebBlog.Application.Common;
+using WebBlog.Application.Common.Paging;
 using WebBlog.Application.Dtos.CommentDtos;
 
 namespace WebBlog.Application.Interfaces
@@ -14,5 +15,7 @@ namespace WebBlog.Application.Interfaces
         Task<CAddResult> UpdateCommentAsync(CommentDto dto);
 
         Task<CAddResult> AddAsync(CommentDto dto);
+
+        Task<TableInfo<CommentDto>> GetCommentByPostWithPaging(GetCommentsRequest request);
     }
 }
