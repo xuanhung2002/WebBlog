@@ -17,7 +17,7 @@ export default function MainLayout() {
         lg: '75%',  
         xl: '70%',   
       },
-      minHeight:"80vh",
+      minHeight:"90vh",
       display: "flex",
       flexDirection: "column",
     }}>

@@ -31,26 +31,26 @@ function Header() {
     >
         <Toolbar disableGutters>
         <Box sx= {{flexGrow: 2, alignItems: "left"}}>
-        <Link href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'white'}}>
-            <AllInclusiveIcon fontSize="large" sx={{ display: { md: 'flex' }, mr: 1, color: "white"}} />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"           
-              sx={{
-                mr: 2,
-                display: {md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'white',
-                textDecoration: 'none',
-                 '&:hover': { color: "white" },
-              }}
-            >
-              WEB BLOG
-            </Typography>
-          </Link>
+          <Link href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'white', maxWidth:"30vh"}}>
+              <AllInclusiveIcon fontSize="large" sx={{ display: { md: 'flex' }, mr: 1, color: "white"}} />
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"           
+                sx={{
+                  mr: 2,
+                  display: {md: 'flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'white',
+                  textDecoration: 'none',
+                  '&:hover': { color: "white" },
+                }}
+              >
+                WEB BLOG
+              </Typography>
+            </Link>
             
         </Box>
         
