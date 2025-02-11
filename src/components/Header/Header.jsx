@@ -1,10 +1,14 @@
 import { AppBar, Avatar, Box, Button, Container, IconButton, Link, Menu, MenuItem, Toolbar, Tooltip, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
+import { useAppContext } from "../../context/AppStore";
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Header() {
+
+  const {isAuthenticated, setIsAuthenticated} = useAppContext();
+
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -39,7 +43,11 @@ function Header() {
                 component="a"           
                 sx={{
                   mr: 2,
-                  display: {md: 'flex' },
+                  display: 
+                  {
+                    xs: "none",
+                    md: 'flex' 
+                  },
                   fontFamily: 'monospace',
                   fontWeight: 700,
                   letterSpacing: '.3rem',
@@ -47,6 +55,7 @@ function Header() {
                   textDecoration: 'none',
                   '&:hover': { color: "white" },
                 }}
+                
               >
                 WEB BLOG
               </Typography>
@@ -55,6 +64,13 @@ function Header() {
         </Box>
         
         <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "flex-end" }}>
+          {!isAuthenticated ? 
+          (<>
+          <Button variant="text" style={{color: "white"}}>Login</Button>
+          <Button variant="text"style={{color: "white"}}>Register</Button>
+          </>
+          ) : (
+          <>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -82,6 +98,10 @@ function Header() {
               </MenuItem>
             ))}
           </Menu>
+          </>
+        )}
+          
+          
         </Box>
         </Toolbar>
       </Container>
