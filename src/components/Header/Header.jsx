@@ -2,6 +2,7 @@ import { AppBar, Avatar, Box, Button, Container, IconButton, Link, Menu, MenuIte
 import { useEffect, useState } from "react";
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import { useAppContext } from "../../context/AppStore";
+import { useNavigate } from "react-router-dom";
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -10,6 +11,7 @@ function Header() {
   const {isAuthenticated, setIsAuthenticated} = useAppContext();
 
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const navigate = useNavigate();
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -66,8 +68,11 @@ function Header() {
         <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "flex-end" }}>
           {!isAuthenticated ? 
           (<>
-          <Button variant="text" style={{color: "white"}}>Login</Button>
-          <Button variant="text"style={{color: "white"}}>Register</Button>
+          <Button variant="text" style={{color: "white"}}
+          onClick={() => navigate("/auth/sign-in")}
+          >Login</Button>
+          <Button variant="text"style={{color: "white"}}
+          onClick={() => navigate("/auth/sign-up")}>Register</Button>
           </>
           ) : (
           <>
