@@ -48,5 +48,16 @@ namespace WebBlog.Application.Services
             var postDto = _mapper.Map<PostDto>(post);
             return postDto;
         }
+
+        public async Task<List<PostDto>> GetRecentPostAsync(int count)
+        {
+            var posts = _repository.GetSet<Post>()
+                                 .OrderByDescending(s => s.CreatedDate)
+                                 .Take(count)
+                                 .ToList();
+            var dtos = _mapper.Map<List<PostDto>>(posts);
+            return dtos;
+            // need get from cache, 10s reset
+        }
     }
 }

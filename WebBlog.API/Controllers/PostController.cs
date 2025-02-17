@@ -24,7 +24,6 @@ namespace WebBlog.API.Controllers
         }
 
         [HttpPost]
-        [Access(Roles.Admin, Roles.User)]
         public async Task<IActionResult> Add(PostDto dto)
         {
             var post = await _postService.AddAsync(dto);
@@ -35,6 +34,12 @@ namespace WebBlog.API.Controllers
         {
             var post = await _postService.GetByIdAsync(id);
             return Ok(post);
+        }
+        [HttpGet("recentposts")]
+        public async Task<IActionResult> GetRecentPosts(int count)
+        {
+            var posts = await _postService.GetRecentPostAsync(count);
+            return Ok(posts);
         }
     }
 }

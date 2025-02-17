@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Newtonsoft.Json;
 using WebBlog.Domain.Entities;
 using WebBlog.Infrastructure.Persistances;
 
@@ -16,6 +17,10 @@ namespace WebBlog.Infrastructure.Configurations
                 .WithOne()
                 .HasForeignKey(t => t.CommentId)
                 .IsRequired();
+            builder.Property(s => s.Histories)
+                .HasConversion(
+                v => JsonConvert.SerializeObject(v),
+                v => JsonConvert.DeserializeObject<List<CommentUpdateHistory>>(v));
         }
     }
 }

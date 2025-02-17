@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using WebBlog.Application.Dto;
+using WebBlog.Application.Dtos.CommentDtos;
 using WebBlog.Domain.Entities;
 using WebBlog.Infrastructure.Identity;
 
@@ -14,6 +15,8 @@ namespace WebBlog.Infrastructure.Mappings
             CreateMap<CreateUserRequest, UserDto>();
 
             CreateMap<AppUser, UserDto>().ReverseMap();
+
+            CreateMap<Comment, CommentDto>().ReverseMap();
         }
     }
 }

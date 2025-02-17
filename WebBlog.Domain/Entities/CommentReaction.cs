@@ -6,6 +6,6 @@ namespace WebBlog.Domain.Entities
     {
         public CCommentReactionType Type { get; set; }
         public Guid CommentId { get; set; }
-        public Guid User { get; set; }
+        public Guid UserId { get; set; }
     }
 }

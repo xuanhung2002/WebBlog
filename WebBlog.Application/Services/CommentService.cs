@@ -22,7 +22,7 @@ namespace WebBlog.Application.Services
 
         public async Task<List<CommentDto>?> GetCommentByPostIdAsync(Guid postId)
         {
-            var comments = _repository.GetSet<Comment>(s => s.PostId == postId);
+            var comments = _repository.GetSet<Comment>(s => s.PostId == postId && s.IsDeleted != true);
             var commentDtos = _mapper.Map<List<CommentDto>>(comments);
 
             var commentLookup = commentDtos.ToLookup(c => c.ParentCommendId);
@@ -41,11 +41,14 @@ namespace WebBlog.Application.Services
         private void BuildCommentTree(CommentDto parentComment, ILookup<Guid?, CommentDto> commentLookup)
         {
             var subComments = commentLookup[parentComment.Id].ToList();
-            parentComment.SubComments.AddRange(subComments);
-
-            foreach (var subComment in subComments)
+            if(subComments.Any())
             {
-                BuildCommentTree(subComment, commentLookup);
+                parentComment.SubComments.AddRange(subComments);
+
+                foreach (var subComment in subComments)
+                {
+                    BuildCommentTree(subComment, commentLookup);
+                }
             }
         }
 
@@ -53,16 +56,22 @@ namespace WebBlog.Application.Services
         {
             var entity = await _repository.FindForUpdateAsync<Comment>(s => s.Id == dto.Id);
 
-            if(entity.CreatedBy != RuntimeContext.CurrentUser.Id)
-            {
-                throw new UnauthorizeException("You are not allow to edit this resource");
-            }
-
-            if(entity == null)
+            if (entity == null)
             {
                 throw new BadRequestException("Comment does not exist");
             }
+
+            if (entity.CreatedBy != RuntimeContext.CurrentUser.Id)
+            {
+                throw new UnauthorizeException("You are not allow to edit this resource");
+            }
             entity.Content = dto.Content;
+            entity.HasChanged = true;
+            entity.Histories.Add(new CommentUpdateHistory
+            {
+                Content = entity.Content,
+                UpdateTime = entity.ModifiedDate.Value
+            });
 
             var result = await _repository.UpdateAsync(entity);
             return new CAddResult
@@ -74,6 +83,7 @@ namespace WebBlog.Application.Services
         public async Task<CAddResult> AddAsync(CommentDto dto)
         {
             var entity = _mapper.Map<Comment>(dto);
+            entity.UserId = !dto.UserId.Equals(Guid.Empty) ? dto.UserId : RuntimeContext.CurrentUser.Id;
             var res = await _repository.AddAsync(entity);
             return new CAddResult { Id = res.Id };
         }

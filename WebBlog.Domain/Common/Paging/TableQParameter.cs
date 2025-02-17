@@ -18,7 +18,7 @@ namespace WebBlog.Application.Common.Paging
     {
         public string SortKey { get; set; } = string.Empty;
         public bool IsAccending { get; set; }
-        public string SearchContent { get; set; }
+        public string SearchContent { get; set; } = string.Empty;
     }
 
     public class TablePageParameter : TableParameter

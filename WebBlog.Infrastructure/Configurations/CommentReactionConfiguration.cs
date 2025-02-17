@@ -11,6 +11,8 @@ namespace WebBlog.Infrastructure.Configurations
         {
             builder.ToTable(TableNames.CommentReaction);
             builder.HasKey(t => t.Id);
+
+            builder.HasIndex(t => t.CommentId).HasDatabaseName("Index_CommentReaction_CommentId");
         }
     }
 }

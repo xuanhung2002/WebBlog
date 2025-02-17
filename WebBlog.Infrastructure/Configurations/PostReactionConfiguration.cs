@@ -11,6 +11,8 @@ namespace WebBlog.Infrastructure.Configurations
         {
             builder.ToTable(TableNames.PostReaction);
             builder.HasKey(p => p.Id);
+
+            builder.HasIndex(p => p.PostId).HasDatabaseName("Index_PostReaction_PostId");
         }
     }
 }

@@ -34,6 +34,7 @@ namespace WebBlog.API.Controllers
         }
 
         [HttpPost]
+        [Access(Roles.Admin, Roles.User)]
         public async Task<IActionResult> AddCommewnt(CommentDto dto)
         {
             var res = await _commentService.AddAsync(dto);

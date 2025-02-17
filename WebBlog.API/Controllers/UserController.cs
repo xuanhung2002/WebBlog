@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebBlog.API.Authorization;
+using WebBlog.Application.Dto;
 using WebBlog.Application.Interfaces;
+using WebBlog.Domain.Constant;
 
 namespace WebBlog.API.Controllers
 {
@@ -35,6 +37,13 @@ namespace WebBlog.API.Controllers
         {
             var user = await _userCacheService.GetUserFromCacheById(id);
             return Ok(user);
+        }
+        [HttpPost]
+        [Access(Roles.User)]
+        public async Task<IActionResult> UpdateUser(UserDto dto)
+        {
+            var res = await _userService.UpdateUserAsync(dto);
+            return Ok(res);
         }
     }
 }
