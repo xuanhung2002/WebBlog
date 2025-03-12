@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using WebBlog.Application.Dto;
 using WebBlog.Application.Interfaces;
 using static WebBlog.Application.Dto.AuthDtos;
@@ -18,9 +19,28 @@ namespace WebBlog.API.Controllers
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var response = await _authService.LoginAsync(dto, IpAddress());
-            SetTokenCookie(response.RefreshToken);
+            SetTokenCookie(response.AccessToken, response.RefreshToken);
             return Ok(response);
 
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTimeOffset.UtcNow.AddDays(-1),
+                Secure = false,
+                SameSite = SameSiteMode.None,
+                Path = "/",
+                Domain = "nxhung.com"
+            };
+
+            Response.Cookies.Delete("accessToken", cookieOptions);
+            Response.Cookies.Delete("refreshToken", cookieOptions);
+
+            return Ok(new { message = "Logged out successfully" });
         }
 
         [HttpPost("register")]
@@ -35,19 +55,24 @@ namespace WebBlog.API.Controllers
         {
             var refreshToken = Request.Cookies["refreshToken"];
             var response = await _authService.RefreshTokenAsync(refreshToken, IpAddress());
-            SetTokenCookie(response.RefreshToken);
+            SetTokenCookie("", response.RefreshToken);
             return Ok(response);
 
         }
-        private void SetTokenCookie(string token)
+        private void SetTokenCookie(string accessToken, string refreshToken)
         {
 
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = DateTimeOffset.UtcNow.AddDays(7)
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                Secure = false,
+                SameSite = SameSiteMode.None,
+                Path = "/",
+                Domain = "nxhung.com"
             };
-            Response.Cookies.Append("refreshToken", token, cookieOptions);
+            Response.Cookies.Append("accessToken", accessToken, cookieOptions);
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
         private string IpAddress()
         {

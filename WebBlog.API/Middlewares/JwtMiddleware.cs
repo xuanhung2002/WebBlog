@@ -16,7 +16,8 @@ namespace WebBlog.API.Middlewares
 
         public async Task Invoke(HttpContext context, IAuthService authService)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            //var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var token = context.Request.Cookies["accessToken"];
             var validationResult = (JwtSecurityToken)authService.ValidateToken(token);
             if(validationResult != null)
             {

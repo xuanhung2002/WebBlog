@@ -23,6 +23,7 @@ builder.Services.AddDistributedCaching(builder.Configuration);
 builder.Services.AddMemoryCaching();
 builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper();
+builder.Services.AddCORS();
 
 var app = builder.Build();
 
@@ -52,7 +53,7 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseMiddleware<JwtMiddleware>();
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 

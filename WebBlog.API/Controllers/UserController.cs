@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebBlog.API.Authorization;
+using WebBlog.Application;
 using WebBlog.Application.Dto;
 using WebBlog.Application.Interfaces;
 using WebBlog.Domain.Constant;
@@ -16,6 +17,14 @@ namespace WebBlog.API.Controllers
         {
             _userService = userService;
             _userCacheService = userCacheService;
+        }
+
+        [HttpGet("myprofile")]
+        [Access(Roles.User, Roles.Admin)]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            var user = await _userCacheService.GetUserFromCacheById(RuntimeContext.CurrentUser.Id);
+            return Ok(user);
         }
 
         [HttpGet]

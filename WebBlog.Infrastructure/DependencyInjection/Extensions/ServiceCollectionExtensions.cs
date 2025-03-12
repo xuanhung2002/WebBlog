@@ -194,5 +194,20 @@ namespace WebBlog.Infrastructure
         {           
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
         }
+
+        public static void AddCORS(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowAll",
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://localhost:5173")
+                                            .AllowAnyMethod()
+                                            .AllowCredentials()
+                                            .AllowAnyHeader();
+                                  });
+            });
+        }
     }
 }
