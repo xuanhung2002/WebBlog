@@ -1,15 +1,18 @@
 import { Facebook } from '@mui/icons-material';
 import { Avatar, Box, Button, Checkbox, Container, Divider, FormControlLabel, TextField, Typography } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Link } from 'react-router-dom';
 import GoogleIcon from "../assets/icons/googleicon.png";
+import { useAppContext } from '../context/AppStore';
 
 const RegisterPage = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmedPassword, setConfirmedPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  
+  const {isAuthenticated} = useAppContext();
   const handleSubmit = (event) => {
     event.preventDefault();
     // Xử lý logic đăng nhập ở đây
@@ -17,6 +20,9 @@ const RegisterPage = () => {
     console.log('Password:', password);
   };
 
+  useEffect(() => {
+    console.log("IsAuthenticate: ", isAuthenticated)
+  }, [])
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -49,10 +55,10 @@ const RegisterPage = () => {
             id="fullname"
             label="Full name"
             name="fullname"
-            autoComplete="none"
+            autoComplete='none'
             autoFocus
-            value={email}
-            // onChange={(e) => setEmail(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -61,7 +67,7 @@ const RegisterPage = () => {
             id="email"
             label="Email Address"
             name="email"
-            autoComplete="email"           
+            autoComplete='none'           
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -73,10 +79,22 @@ const RegisterPage = () => {
             label="Password"
             type="password"
             id="password"
-            autoComplete="current-password"
+            autoComplete="none"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />         
+          />    
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Confirmed password"
+            type="password"
+            id="confirmedPassword"
+            autoComplete="none"
+            value={confirmedPassword}
+            onChange={(e) => setConfirmedPassword(e.target.value)}
+          />       
           <Button
             type="submit"
             fullWidth

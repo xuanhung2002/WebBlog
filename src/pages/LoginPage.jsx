@@ -1,18 +1,37 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Container, Avatar, Grid, Link, Checkbox, FormControlLabel, Divider } from '@mui/material';
+import { Box, TextField, Button, Typography, Container, Avatar, Link, Checkbox, FormControlLabel, Divider } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { CheckBox, Facebook, Google } from '@mui/icons-material';
 import GoogleIcon from "../assets/icons/googleicon.png";
+import apiService from '../services/apiSerivce';
+import { useAppContext } from '../context/AppStore';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+  const {setIsAuthenticated} = useAppContext();
   
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Xử lý logic đăng nhập ở đây
-    console.log('Email:', email);
+    // login logic
+    const response = await apiService.post("/api/auth/login", {userName: username, password: password});
+    console.log('Login success:', response.data);
+    if(response.status === 200){
+
+      setIsAuthenticated(true);      
+      const myprofile = await apiService.get("/api/user/myprofile", {});
+      localStorage.setItem("myprofile", myprofile.data);
+      toast.success("Login successfully")
+      navigate("/auth/sign-up");
+    }
+    
+    console.log('Username:', username);
     console.log('Password:', password);
   };
 
@@ -45,13 +64,13 @@ const LoginPage = () => {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
             margin="normal"

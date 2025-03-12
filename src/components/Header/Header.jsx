@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import { useAppContext } from "../../context/AppStore";
 import { useNavigate } from "react-router-dom";
+import apiService from "../../services/apiSerivce";
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -21,6 +22,19 @@ function Header() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleLogout = async () => {
+    try {
+      await apiService.post("/api/auth/logout"); 
+  
+      setIsAuthenticated(false);
+
+      navigate("/auth/sign-in");
+    } catch (error) {
+      console.error("Error when logout:", error);
+    }
+  };
+
 
   return (
     <AppBar position="static">
@@ -98,7 +112,7 @@ function Header() {
             onClose={handleCloseUserMenu}
           >
             {settings.map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
+              <MenuItem key={setting} onClick={setting === "Logout" ? handleLogout : handleCloseUserMenu}>
                 <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
               </MenuItem>
             ))}

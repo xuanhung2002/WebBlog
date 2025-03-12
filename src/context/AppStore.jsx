@@ -1,11 +1,10 @@
 import { createContext, useContext, useState } from "react";
+import { getAccessTokenFromCookies, getMyProfile, getProfileFromLocalStorage } from "../services/authService";
 
 const initialAppContext = {
-    // isAuthenticated: Boolean(getAccessTokenFromCookies()),
-    isAuthenticated: null,
+    isAuthenticated: Boolean(getMyProfile()),
     setIsAuthenticated: () => null,
-    // profile: getProfileFromCookies(),
-    profile: null,
+    profile: getProfileFromLocalStorage(),
     setProfile: () => null,
     reset: () => null,
   };
