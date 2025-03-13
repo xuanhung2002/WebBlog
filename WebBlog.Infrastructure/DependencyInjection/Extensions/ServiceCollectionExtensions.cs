@@ -105,11 +105,13 @@ namespace WebBlog.Infrastructure
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidateLifetime = false,
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     //ValidIssuer = configuration["Tokens:Issuer"],
                     //ValidAudience = configuration["Tokens:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Tokens:Key"]))
+                    RequireExpirationTime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Tokens:Key"])),
+                    ClockSkew = TimeSpan.Zero,
                 };
                 options.Events = new JwtBearerEvents
                 {

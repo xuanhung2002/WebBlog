@@ -70,7 +70,7 @@ namespace WebBlog.Infrastructure.Services.Identity
         }
 
         public async Task<AuthResponseDto> RefreshTokenAsync(string token, string ipAddress)
-        {
+        {   
             var refreshToken = await _repository.FindAsync<RefreshToken>(s => s.Token == token);
             if (refreshToken != null)
             {
@@ -187,9 +187,10 @@ namespace WebBlog.Infrastructure.Services.Identity
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    RequireExpirationTime = false,
+                    RequireExpirationTime = true,
                     // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.Zero,
+                    ValidateLifetime = true,
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;

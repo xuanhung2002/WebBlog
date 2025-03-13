@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using WebBlog.Application.Dto;
 using WebBlog.Application.Interfaces;
 using static WebBlog.Application.Dto.AuthDtos;
@@ -31,10 +32,8 @@ namespace WebBlog.API.Controllers
             {
                 HttpOnly = true,
                 Expires = DateTimeOffset.UtcNow.AddDays(-1),
-                Secure = false,
+                Secure = true,
                 SameSite = SameSiteMode.None,
-                Path = "/",
-                Domain = "nxhung.com"
             };
 
             Response.Cookies.Delete("accessToken", cookieOptions);
@@ -54,8 +53,12 @@ namespace WebBlog.API.Controllers
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
+            if (refreshToken.IsNullOrEmpty())
+            {
+                return Forbid();
+            }
             var response = await _authService.RefreshTokenAsync(refreshToken, IpAddress());
-            SetTokenCookie("", response.RefreshToken);
+            SetTokenCookie(response.AccessToken, response.RefreshToken);
             return Ok(response);
 
         }
@@ -66,10 +69,8 @@ namespace WebBlog.API.Controllers
             {
                 HttpOnly = true,
                 Expires = DateTimeOffset.UtcNow.AddDays(7),
-                Secure = false,
+                Secure = true,
                 SameSite = SameSiteMode.None,
-                Path = "/",
-                Domain = "nxhung.com"
             };
             Response.Cookies.Append("accessToken", accessToken, cookieOptions);
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
