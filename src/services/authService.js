@@ -19,12 +19,26 @@ export const clearCookies = () => {
       console.log("Init myprofile: ", res.data)
       return res.data
     }
-    return null;
+    else{
+      console.log("call myprofile failed");
+      return null;
+    }
   }
 
-  export const getProfileFromLocalStorage = () => {
+  export const getProfileFromSessionStorage = () => {
 
-    const result = localStorage.getItem("myProfile");
-    console.log("profileee", result);
+    const result = sessionStorage.getItem("myProfile");
+    // console.log("profileee", JSON.parse(result));
     return result ? JSON.parse(result) : null;
   };
+
+
+  export const refreshAccessToken = async () => {
+      try {
+        await apiService.post("/api/auth/refresh-token");
+      } catch (error) {
+        console.error("Refresh token failed", error);
+        throw error;
+      }
+    };
+  

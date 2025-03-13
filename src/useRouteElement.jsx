@@ -3,6 +3,7 @@ import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/loginPage';
+import HomePage from './pages/HomePage';
 
 function ProtectedRoute() {
     const isAuthenticated = true; // need implement
@@ -32,7 +33,10 @@ export default function useRootElements() {
                     path: "",
                     element: <MainLayout />,
                     children: [
-                    
+                        {
+                            path:"",
+                            element: <HomePage/>
+                        }
                     ]
                 },
                 {

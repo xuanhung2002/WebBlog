@@ -4,8 +4,12 @@ import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import { useAppContext } from "../../context/AppStore";
 import { useNavigate } from "react-router-dom";
 import apiService from "../../services/apiSerivce";
+import Cookies from "js-cookie";
+import { ROUTES } from "../../constants/routes";
+import { APIS } from "../../constants/apis";
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
 
 function Header() {
 
@@ -25,16 +29,21 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      await apiService.post("/api/auth/logout"); 
+      await apiService.post(APIS.Logout); 
   
       setIsAuthenticated(false);
+      Cookies.set("isLogged", false);
 
-      navigate("/auth/sign-in");
+      navigate(ROUTES.HOME);
     } catch (error) {
       console.error("Error when logout:", error);
     }
   };
 
+  const testProfile = async () => {
+   var res =  await apiService.get(APIS.GetMyProfile);
+   console.log("test my profile: ", res.data) 
+  }
 
   return (
     <AppBar position="static">
@@ -83,7 +92,7 @@ function Header() {
           {!isAuthenticated ? 
           (<>
           <Button variant="text" style={{color: "white"}}
-          onClick={() => navigate("/auth/sign-in")}
+          onClick={() => navigate(ROUTES.LOGIN)}
           >Login</Button>
           <Button variant="text"style={{color: "white"}}
           onClick={() => navigate("/auth/sign-up")}>Register</Button>
@@ -112,15 +121,13 @@ function Header() {
             onClose={handleCloseUserMenu}
           >
             {settings.map((setting) => (
-              <MenuItem key={setting} onClick={setting === "Logout" ? handleLogout : handleCloseUserMenu}>
+              <MenuItem key={setting} onClick={setting === "Logout" ? handleLogout : (setting === "Profile" ? testProfile : handleCloseUserMenu)}>
                 <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
               </MenuItem>
             ))}
           </Menu>
           </>
-        )}
-          
-          
+        )}           
         </Box>
         </Toolbar>
       </Container>

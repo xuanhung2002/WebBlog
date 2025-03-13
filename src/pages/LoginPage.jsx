@@ -7,6 +7,9 @@ import apiService from '../services/apiSerivce';
 import { useAppContext } from '../context/AppStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Cookies from "js-cookie";
+import { APIS } from '../constants/apis';
+import { ROUTES } from '../constants/routes';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -20,21 +23,26 @@ const LoginPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // login logic
-    const response = await apiService.post("/api/auth/login", {userName: username, password: password});
+    const response = await apiService.post(APIS.Login, {userName: username, password: password});
     console.log('Login success:', response.data);
     if(response.status === 200){
-
       setIsAuthenticated(true);      
-      const myprofile = await apiService.get("/api/user/myprofile", {});
-      localStorage.setItem("myprofile", myprofile.data);
+      Cookies.set("isLogged", true)
+      const myprofile = await apiService.get(APIS.GetMyProfile, {})
+      console.log("my profile after login: ", myprofile);
+      sessionStorage.setItem("myProfile", JSON.stringify(myprofile.data));
       toast.success("Login successfully")
-      navigate("/auth/sign-up");
+      window.location.href = ROUTES.HOME
     }
     
     console.log('Username:', username);
     console.log('Password:', password);
   };
 
+  const test = async () => {
+    const myprofile = await apiService.get(APIS.GetMyProfile, {});
+    console.log(myprofile.data);
+  }
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -126,6 +134,7 @@ const LoginPage = () => {
               fullWidth
               variant="outlined"
               sx={{ mt: 2, mb: 1, textTransform: "none" }}
+              onClick={() => test()}
             >
               <img
                 src={GoogleIcon} // Thay đường dẫn icon Google của bạn

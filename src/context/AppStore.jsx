@@ -1,10 +1,14 @@
-import { createContext, useContext, useState } from "react";
-import { getAccessTokenFromCookies, getMyProfile, getProfileFromLocalStorage } from "../services/authService";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getAccessTokenFromCookies, getMyProfile, getProfileFromSessionStorage } from "../services/authService";
+import { use } from "react";
+import Cookies from "js-cookie";
+import apiService from "../services/apiSerivce";
+import { APIS } from "../constants/apis";
 
 const initialAppContext = {
-    isAuthenticated: Boolean(getMyProfile()),
+    isAuthenticated: null,
     setIsAuthenticated: () => null,
-    profile: getProfileFromLocalStorage(),
+    profile: null,
     setProfile: () => null,
     reset: () => null,
   };
@@ -16,8 +20,38 @@ const initialAppContext = {
       defaultValue.isAuthenticated
     );
     const [profile, setProfile] = useState(defaultValue.profile);
-  
-    const reset = () => {
+    
+    useEffect(() => {
+      var isLogged = Cookies.get("isLogged");
+      console.log("isLogged", isLogged);
+      if(isLogged === "false" || !isLogged){
+        reset()
+        console.log("isAuth", isAuthenticated)
+      }
+      else{
+
+        var sessionProfile = getProfileFromSessionStorage();
+        console.log("My profile in context: ", sessionProfile)
+        if(!sessionProfile){
+          var currentProfile = getMyProfile();
+          if(currentProfile){
+            setIsAuthenticated(true);
+            setProfile(currentProfile);
+          }
+          else{
+            reset();
+          }
+        }
+        else{
+          setIsAuthenticated(true)
+          setProfile(sessionProfile)
+        }
+      }      
+    }, [])
+
+    const reset = async () => {
+      Cookies.set("isLogged", false)
+      await apiService.post(APIS.Logout);
       setIsAuthenticated(false);
       setProfile(null);
     };
