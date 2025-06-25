@@ -7,6 +7,7 @@ import apiService from "../../services/apiSerivce";
 import Cookies from "js-cookie";
 import { ROUTES } from "../../constants/routes";
 import { APIS } from "../../constants/apis";
+import { toast } from "react-toastify";
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -34,7 +35,7 @@ function Header() {
       setIsAuthenticated(false);
       Cookies.set("isLogged", false);
 
-      navigate(ROUTES.HOME);
+      window.location.href = ROUTES.HOME;
     } catch (error) {
       console.error("Error when logout:", error);
     }

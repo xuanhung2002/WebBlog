@@ -31,7 +31,6 @@ const LoginPage = () => {
       const myprofile = await apiService.get(APIS.GetMyProfile, {})
       console.log("my profile after login: ", myprofile);
       sessionStorage.setItem("myProfile", JSON.stringify(myprofile.data));
-      toast.success("Login successfully")
       window.location.href = ROUTES.HOME
     }
     
