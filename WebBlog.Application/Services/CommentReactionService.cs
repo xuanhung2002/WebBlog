@@ -1,11 +1,5 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebBlog.Application.Abstraction;
-using WebBlog.Application.Common;
 using WebBlog.Application.Exceptions;
 using WebBlog.Application.Interfaces;
 using WebBlog.Domain.Entities;

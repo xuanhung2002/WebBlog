@@ -1,4 +1,4 @@
-﻿namespace WebBlog.Application.Common
+﻿namespace WebBlog.Application
 {
     public class CUserBase
     {

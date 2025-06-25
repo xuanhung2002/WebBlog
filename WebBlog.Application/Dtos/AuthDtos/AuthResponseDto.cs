@@ -1,4 +1,4 @@
-﻿namespace WebBlog.Application.Dto
+﻿namespace WebBlog.Application
 {
     public class AuthResponseDto
     {

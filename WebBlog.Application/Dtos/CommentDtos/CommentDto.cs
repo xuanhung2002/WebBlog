@@ -1,4 +1,4 @@
-﻿namespace WebBlog.Application.Dtos.CommentDtos
+﻿namespace WebBlog.Application
 {
     public class CommentDto : DtoAuditBase
     {

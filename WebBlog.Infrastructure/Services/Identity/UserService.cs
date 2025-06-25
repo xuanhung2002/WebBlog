@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using WebBlog.Application;
 using WebBlog.Application.Abstraction;
-using WebBlog.Application.Common;
-using WebBlog.Application.Dto;
 using WebBlog.Application.Interfaces;
 using WebBlog.Infrastructure.Identity;
 

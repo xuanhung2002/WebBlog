@@ -1,5 +1,4 @@
-﻿using WebBlog.Application.Common;
-using WebBlog.Application.Interfaces;
+﻿using WebBlog.Application.Interfaces;
 
 namespace WebBlog.Application.Services
 {

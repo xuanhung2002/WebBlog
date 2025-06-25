@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using WebBlog.Application.Abstraction;
-using WebBlog.Application.Common;
-using WebBlog.Application.Dto;
 using WebBlog.Application.Interfaces;
 using WebBlog.Domain.Entities;
 

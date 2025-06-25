@@ -1,9 +1,7 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using WebBlog.Application.Dto;
-using WebBlog.Application.Interfaces;
-using static WebBlog.Application.Dto.AuthDtos;
+using WebBlog.Application;
+using static WebBlog.Application.AuthDtos;
 
 namespace WebBlog.API.Controllers
 {

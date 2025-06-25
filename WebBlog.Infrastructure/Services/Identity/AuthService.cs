@@ -6,15 +6,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using WebBlog.Application;
 using WebBlog.Application.Abstraction;
-using WebBlog.Application.Dto;
 using WebBlog.Application.Exceptions;
 using WebBlog.Application.Interfaces;
 using WebBlog.Domain.Constant;
 using WebBlog.Domain.Entities;
 using WebBlog.Infrastructure.Identity;
 using WebBlog.Infrastructure.Workers;
-using static WebBlog.Application.Dto.AuthDtos;
+using static WebBlog.Application.AuthDtos;
 
 namespace WebBlog.Infrastructure.Services.Identity
 {

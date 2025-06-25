@@ -1,7 +1,4 @@
-﻿using WebBlog.Application.Common;
-using WebBlog.Application.Dto;
-
-namespace WebBlog.Application.Interfaces
+﻿namespace WebBlog.Application.Interfaces
 {
     public interface IPostService
     {

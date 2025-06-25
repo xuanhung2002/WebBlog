@@ -1,9 +1,5 @@
 ﻿using AutoMapper;
 using WebBlog.Application.Abstraction;
-using WebBlog.Application.Common;
-using WebBlog.Application.Common.DataFilters;
-using WebBlog.Application.Common.Paging;
-using WebBlog.Application.Dtos.CommentDtos;
 using WebBlog.Application.Exceptions;
 using WebBlog.Application.Interfaces;
 using WebBlog.Domain.Entities;

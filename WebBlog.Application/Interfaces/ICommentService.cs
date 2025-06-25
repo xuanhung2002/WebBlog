@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebBlog.Application.Common;
-using WebBlog.Application.Common.Paging;
-using WebBlog.Application.Dtos.CommentDtos;
-
-namespace WebBlog.Application.Interfaces
+﻿namespace WebBlog.Application.Interfaces
 {
     public interface ICommentService
     {

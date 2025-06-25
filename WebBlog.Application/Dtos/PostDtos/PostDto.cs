@@ -1,6 +1,4 @@
-﻿using WebBlog.Application.Dtos;
-
-namespace WebBlog.Application.Dto
+﻿namespace WebBlog.Application
 {
     public class PostDto : DtoAuditBase
     {

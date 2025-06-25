@@ -1,6 +1,4 @@
-﻿using WebBlog.Application.Common;
-
-namespace WebBlog.Application.Interfaces
+﻿namespace WebBlog.Application.Interfaces
 {
     public interface ICurrentUserService
     {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebBlog.API.Authorization;
 using WebBlog.Application;
-using WebBlog.Application.Dto;
 using WebBlog.Application.Interfaces;
 using WebBlog.Domain.Constant;
 

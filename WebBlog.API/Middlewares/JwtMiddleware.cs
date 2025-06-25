@@ -1,8 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using WebBlog.Application;
-using WebBlog.Application.Common;
-using WebBlog.Application.Interfaces;
 
 namespace WebBlog.API.Middlewares
 {

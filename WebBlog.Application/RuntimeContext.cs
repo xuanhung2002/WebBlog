@@ -1,6 +1,4 @@
-﻿using WebBlog.Application.Common;
-
-namespace WebBlog.Application
+﻿namespace WebBlog.Application
 {
     public static class RuntimeContext
     {

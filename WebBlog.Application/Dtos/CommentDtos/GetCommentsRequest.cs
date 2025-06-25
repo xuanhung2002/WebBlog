@@ -1,7 +1,4 @@
-﻿using WebBlog.Application.Common.DataFilters;
-using WebBlog.Application.Common.Paging;
-
-namespace WebBlog.Application.Dtos.CommentDtos
+﻿namespace WebBlog.Application
 {
     public class GetCommentsRequest
     {   

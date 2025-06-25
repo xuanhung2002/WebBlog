@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebBlog.Application.Dto;
+﻿using WebBlog.Application;
 
-namespace WebBlog.Application.Dtos
+namespace WebBlog.Application
 {
     public class DtoAuditBase : DtoBase
     {
