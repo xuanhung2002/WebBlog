@@ -22,20 +22,33 @@ const LoginPage = () => {
   
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // login logic
-    const response = await apiService.post(APIS.Login, {userName: username, password: password});
-    console.log('Login success:', response.data);
-    if(response.status === 200){
-      setIsAuthenticated(true);      
-      Cookies.set("isLogged", true)
-      const myprofile = await apiService.get(APIS.GetMyProfile, {})
-      console.log("my profile after login: ", myprofile);
-      sessionStorage.setItem("myProfile", JSON.stringify(myprofile.data));
-      window.location.href = ROUTES.HOME
+    try{
+      const response = await apiService.post(APIS.Login, 
+        {userName: username, password: password},
+        { skipAuthRefresh: true }
+      );
+      console.log('Login success:', response.data);
+      if(response.status === 200){
+        setIsAuthenticated(true);      
+        Cookies.set("isLogged", true)
+        const myprofile = await apiService.get(APIS.GetMyProfile, {})
+        console.log("my profile after login: ", myprofile);
+        sessionStorage.setItem("myProfile", JSON.stringify(myprofile.data));
+        window.location.href = ROUTES.HOME
+      }
+      else{
+        console.log("Loggin failed", response);
+        toast.error(response.error);
+      }
+      
+      console.log('Username:', username);
+      console.log('Password:', password);
+    }
+    catch(error){
+console.log("Loggin failed", error);
+        toast.error(error.response.data?.message);
     }
     
-    console.log('Username:', username);
-    console.log('Password:', password);
   };
 
   const test = async () => {

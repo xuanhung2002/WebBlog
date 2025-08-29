@@ -27,9 +27,10 @@ const apiService = axios.create({
   apiService.interceptors.response.use(
     (response) => response,
     async (error) => {
-      const originalRequest = error.config
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
+      const originalRequest = error.config;
+      const shouldSkipRefresh = originalRequest.skipAuthRefresh === true;
+      if (error.response?.status === 401 && !originalRequest._retry && !shouldSkipRefresh) {
+      originalRequest._retry = true;
         // refresh token
         try {
           await refreshAccessToken();

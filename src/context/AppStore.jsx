@@ -51,7 +51,7 @@ const initialAppContext = {
 
     const reset = async () => {
       Cookies.set("isLogged", false)
-      await apiService.post(APIS.Logout);
+      // await apiService.post(APIS.Logout);
       setIsAuthenticated(false);
       setProfile(null);
     };
